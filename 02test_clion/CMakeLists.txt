@@ -33,10 +33,13 @@ enable_language(C ASM)
 
 # Create an executable object type
 add_executable(${CMAKE_PROJECT_NAME}
-        User_File/Task/Task.cpp
+        User_File/Task/Task.c
         User_File/Task/Task.h
-        User_File/Device/dvc_LED.cpp
-        User_File/Device/dvc_LED.h)
+        User_File/Device/dvc_LED.c
+        User_File/Device/dvc_LED.h
+        User_File/Middleware/Driver/drv_usart.c
+        User_File/Middleware/Driver/drv_usart.h)
+
 
 # Add STM32CubeMX generated sources
 add_subdirectory(cmake/stm32cubemx)
@@ -49,13 +52,21 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
-        User_File/Task/Task.cpp
+        User_File/Task/Task.c
+        User_File/Middleware/Driver/drv_usart.c
+        User_File/Middleware/Driver/drv_can.c
+        User_File/Device/dvc_LED.c
+
+
 )
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
         User_File/Task
+        User_File/Middleware/Driver
+
+
 )
 
 # Add project symbols (macros)

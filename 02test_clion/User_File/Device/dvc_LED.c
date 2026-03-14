@@ -1,5 +1,5 @@
 /**
-* @file dvc_LED.cpp
+* @file dvc_LED.c
  * @author Hh999999
  * @brief A板LED驱动,LED红绿灯交替闪烁
  * @version 1.0
