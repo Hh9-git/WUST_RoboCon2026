@@ -19,12 +19,17 @@
 uint8_t Tx_data[5]="Hello";
 uint8_t Rx_data[5];
 
- uint8_t CAN1_0x200_Tx_Data[8]={0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08};
 
+
+void NULL_Call_Back(Struct_CAN_Rx_Buffer *Rx_Buffer)
+{
+    // 这个函数什么都不做，作为CAN_Init的参数传入，表示不使用CAN接收回调函数
+}
 
 void Task_Init()
 {
-    CAN_Init(&hcan1, NULL);
+    CAN_Init(&hcan1, NULL_Call_Back);
+    CAN_Init(&hcan2, NULL_Call_Back);
     // HAL_UARTEx_ReceiveToIdle_DMA(&huart2, Rx_data, 5);
 
 
@@ -36,9 +41,18 @@ void Task_Loop()
     while (1)
     {
 
+        LED_red_Toggle();
+        LED_green_Toggle();
+        CAN1_0x200_Tx_Data[0]=0x01;
+        CAN1_0x200_Tx_Data[1]=0x02;
+        CAN2_0x200_Tx_Data[0]=0x11;
+        CAN2_0x200_Tx_Data[1]=0x12;
+
         // HAL_UART_Transmit_DMA(&huart2, Tx_data, 5);
         // HAL_Delay(500);
         CAN_Send_Data(&hcan1, 0x200, CAN1_0x200_Tx_Data, 8);
+        CAN_Send_Data(&hcan2, 0x200, CAN2_0x200_Tx_Data, 8);
+
         HAL_Delay(500);
 
 
