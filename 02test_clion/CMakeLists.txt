@@ -38,7 +38,9 @@ add_executable(${CMAKE_PROJECT_NAME}
         User_File/Device/dvc_LED.c
         User_File/Device/dvc_LED.h
         User_File/Middleware/Driver/drv_usart.c
-        User_File/Middleware/Driver/drv_usart.h)
+        User_File/Middleware/Driver/drv_usart.h
+        User_File/Device/dvc_vofa.c
+        User_File/Device/dvc_vofa.h)
 
 
 # Add STM32CubeMX generated sources
@@ -56,6 +58,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
         User_File/Middleware/Driver/drv_usart.c
         User_File/Middleware/Driver/drv_can.c
         User_File/Device/dvc_LED.c
+        User_File/Device/dvc_vofa.c
 
 
 )
@@ -65,6 +68,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
         User_File/Task
         User_File/Middleware/Driver
+        User_File/Device
 
 
 )
@@ -83,3 +87,6 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 
     # Add user defined libraries
 )
+
+
+

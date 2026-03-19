@@ -15,52 +15,129 @@
 #include "../Device/dvc_LED.h"
 #include "drv_can.h"
 #include "drv_usart.h"
+#include "dvc_vofa.h"
+#include "stdio.h"
+#include "stm32f4xx_hal.h"
 
 
-uint8_t tx_buffer[10]={0xAB,0XCD,0xEF,0x01,0x23,0x45,0x67,0x89,0x00,0x00};
-uint8_t rx_buffer[10]={0};
+#define PRINT(window, fmt, args...) printf("{"#window"}"fmt"\n", ##args)
 
-void NULL_Call_Back(Struct_CAN_Rx_Buffer *Rx_Buffer)
+
+uint8_t tx_buffer[10];
+
+uint8_t rx_buffer[10] = {0};
+
+
+uint16_t Encoder;
+uint16_t Omega;
+uint16_t Torgue;
+uint16_t Temperture;
+int a=0;
+
+float f1 = 11.4, f2 = 51.4, f3 = 0;
+
+void CAN_Motor_Call_Back(Struct_CAN_Rx_Buffer* Rx_Buffer)
 {
+    uint8_t* data = Rx_Buffer->Data;
+    switch (Rx_Buffer->Header.StdId)
+    {
+    case 0x201:
+        {
+            // 处理CAN1电机数据
+            // data[0] ~ data[7]是接收到的数据
+            Encoder = (data[0] << 8) | data[1];
+            Omega = (data[2] << 8) | data[3];
+            Torgue = (data[4] << 8) | data[5];
+            Temperture = data[6];
+            // PRINT(motor, "torque: %d, speed: %d, temp: %d, current: %d", Encoder, Omega, Torgue, Temperture);
+        }
+    }
+    // CAN1电机
     // 这个函数什么都不做，作为CAN_Init的参数传入，表示不使用CAN接收回调函数
 }
 
 
-void Serial_Call_Back(uint8_t *Buffer, uint16_t Length)
+// // 重定向 fputc → 串口发送
+// int fputc(int ch, FILE* stream)
+// {
+//     // huart1 改成你实际用的串口：huart1 / huart2 / huart3
+//     HAL_UART_Transmit(&huart2, (uint8_t*)&ch, 1, HAL_MAX_DELAY);
+//     return ch;
+// }
+
+
+void Serial_Call_Back(uint8_t* Buffer, uint16_t Length)
 {
-    if (rx_buffer[0]=='1')
+    if (rx_buffer[0] == '1')
     {
         LED_red_Toggle();
-        rx_buffer[0]='0';
+        rx_buffer[0] = '0';
     }
-    else if (rx_buffer[0]=='2')
+    else if (rx_buffer[1] == '2')
     {
         LED_green_Toggle();
-        rx_buffer[0]='0';
+        rx_buffer[0] = '0';
     }
     // 这个函数什么都不做，作为UART_Init的参数传入，表示不使用UART接收回调函数
 }
+
 void Task_Init()
 {
-    CAN_Init(&hcan1, NULL_Call_Back);
-    CAN_Init(&hcan2, NULL_Call_Back);
+    CAN_Init(&hcan1, CAN_Motor_Call_Back);
+
+
+    // CAN_Init(&hcan2, CAN_Motor_Call_Back);
+
 
     // HAL_UARTEx_ReceiveToIdle_DMA(&huart2, Rx_data, 5);
 
-   // UART_Init(&huart2, Serial_Call_Back, 10);
 
     Uart_Init(&huart2, rx_buffer, 10, Serial_Call_Back);
-
-
 }
 
 void Task_Loop()
 {
     while (1)
     {
+        // uint16_t current = 3;
+        // uint16_t voltage = 6;
+        //
+        //                                                                                                  N
+        // PRINT(plotter, "%d,%d", current, voltage);
+        // PRINT(power, "the power is %d W", current * voltage);
+        //
+        // Vofa_FireWater("%f,%f,%f\r\n", f1, f2, f3);
+        // (f1 > 20) ? (f1 = 11.4) : (f1 += 0.5);
+        // (f2 < 0) ? (f2 = 51.4) : (f2 -= 0.5);
+        // f3 = f1 + f2;
 
 
+        while (a<100)
+        {
+            a++;
+        }
+        if (a==100)
+        {
+            a=0;
+        }
+        float f4[5];
+        f4[0]=Encoder*360.0f/8191.0f;
+        f4[1]=Omega;
+        f4[2]=Torgue*20.0f/16384.0f;
+        f4[3]=Temperture;
+        f4[5]=a;
 
+        Vofa_JustFloat(f4, 5);
+
+
+        // HAL_Delay(10);
+        // Vofa_FireWater("%f,%f,%f,%f\r\n",Encoder, Omega, Torgue, Temperture);
+        // PRINT(plotter, "%d,%d,%d,%d", Encoder, Omega, Torgue, Temperture);
+
+        // printf("Hello, world!");
+        // HAL_Delay(1);
+
+        // JustFloat_test();
 
         // // LED_red_Toggle();
         // // LED_green_Toggle();
@@ -69,9 +146,45 @@ void Task_Loop()
         // CAN2_0x200_Tx_Data[0]=0x11;
         // CAN2_0x200_Tx_Data[1]=0x12;
 
-       // UART_Send_Data(&huart2, tx_buffer, 2);
+        // UART_Send_Data(&huart2, tx_buffer, 2);
+        // uint8_t i;
+        // for (i = 0; i < 10; i++)
+        // {
+        //     tx_buffer[i] = i;
+        // }
+        // while (tx_buffer[0] < 10)
+        // {
+        //     tx_buffer[0]++;
+        //     HAL_Delay(100);
+        // }
+        //
 
-        UART_Send_Data(&huart2, tx_buffer, 10);
+        // static uint32_t flag;
+        // // UART2_Tx_Data[0] = 0xAB;
+        // if (flag == 2500)
+        // {
+        //     flag = 0;
+        // }
+        // float tmp_data;
+        // tmp_data = ((float)flag / 1000.0f) * ((float)flag / 1000.0f);
+        // // for (uint8_t i = 0; i < 4; i++)
+        // // {
+        // //     UART2_Tx_Data[i + 1] = *((char *)(&tmp_data) + i);
+        // // }
+        // //
+        // // float led_status;
+        // // led_status = !HAL_GPIO_ReadPin(GPIOG, GPIO_PIN_1);
+        // // for (uint8_t i = 0; i < 4; i++)
+        // // {
+        // //     UART2_Tx_Data[i + 5] = *((char *)(&led_status) + i);
+        // // }
+        // //
+        // HAL_Delay(0);
+        // flag++;
+        // // UART_Send_Data(&huart2, UART2_Tx_Data, 9);
+        //
+        // PRINT(plotter, "%d,%d", flag, (uint16_t)tmp_data);
+        // // PRINT(power, "the power is %d W", current * voltage);
 
         // if (rx_buffer[0]=='1')
         // {
@@ -85,15 +198,36 @@ void Task_Loop()
         // }
         // HAL_UART_Transmit_DMA(&huart2, Tx_data, 5);
 
+
+        // int16_t torque = 2000;
+
+        // while(torque < 3000)
+        // {
+        //     torque += 50;
+        //     CAN1_0x200_Tx_Data[0] = torque >> 8;
+        //     CAN1_0x200_Tx_Data[1] = torque;
+        //     CAN_Send_Data(&hcan1, 0x200, CAN1_0x200_Tx_Data, 8);
+        //     HAL_Delay(50);
+        // }
+        // while(torque > -1000)
+        // {
+        //     torque -= 50;
+        //     CAN1_0x200_Tx_Data[0] = torque >> 8;
+        //     CAN1_0x200_Tx_Data[1] = torque;
+        //     CAN_Send_Data(&hcan1, 0x200, CAN1_0x200_Tx_Data, 8);
+        //     HAL_Delay(50);
+        // }
+
+        // CAN1_0x200_Tx_Data[0] = torque >> 8;
+        // CAN1_0x200_Tx_Data[1] = torque;
         // CAN_Send_Data(&hcan1, 0x200, CAN1_0x200_Tx_Data, 8);
+        // HAL_Delay(1);;
         // CAN_Send_Data(&hcan2, 0x200, CAN2_0x200_Tx_Data, 8);
         // //
 
-
-
+        // int16_t Rx_Encoder,Rx_Omega,Rx_Torque,Rx_Temp;
     }
 }
-
 
 
 //

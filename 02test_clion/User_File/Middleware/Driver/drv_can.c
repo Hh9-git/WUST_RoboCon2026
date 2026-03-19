@@ -186,10 +186,10 @@ void TIM_CAN_PeriodElapsedCallback()
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
     //判断程序初始化完成
-    if(init_finished == 0)
-    {
-        return;
-    }
+    // if(init_finished == 0)
+    // {
+    //     return;
+    // }
 
     //选择回调函数
     //选择回调函数
