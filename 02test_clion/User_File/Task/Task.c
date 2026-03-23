@@ -16,6 +16,7 @@
 #include "drv_can.h"
 #include "drv_usart.h"
 #include "dvc_vofa.h"
+#include "dvc_remote.h"
 #include "stdio.h"
 #include "stm32f4xx_hal.h"
 
@@ -28,13 +29,20 @@ uint8_t tx_buffer[10];
 uint8_t rx_buffer[10] = {0};
 
 
-uint16_t Encoder;
-uint16_t Omega;
-uint16_t Torgue;
-uint16_t Temperture;
+int16_t Encoder,Omega,Torgue,Temperture;
+
 int a=0;
 
-float f1 = 11.4, f2 = 51.4, f3 = 0;
+float f4[5]={0};
+
+remote_t remote;
+
+// float x_l=(float)remote.X_L;
+// float y_l=(float)remote.Y_L;
+// float x_r=(float)remote.X_R;
+// float x_l=(float)remote.X_L;
+
+
 
 void CAN_Motor_Call_Back(Struct_CAN_Rx_Buffer* Rx_Buffer)
 {
@@ -93,12 +101,34 @@ void Task_Init()
 
 
     Uart_Init(&huart2, rx_buffer, 10, Serial_Call_Back);
+    remote_init(&remote);
+
 }
+
+
 
 void Task_Loop()
 {
     while (1)
     {
+
+
+
+
+
+        LED_red_Toggle();
+        LED_green_Toggle();
+        HAL_Delay(500);
+        remote_task();
+        __remote_debug();
+
+        // UART2_Tx_Data[0]=remote.X_L>>8;
+        // UART2_Tx_Data[1]=remote.X_L;
+        // UART_Send_Data(&huart2,UART2_Tx_Data,2);
+
+         justfloat_displaydata((float)remote.X_L,(float)remote.X_R,(float)remote.Y_L,(float)remote.Y_R,0,0);
+
+
         // uint16_t current = 3;
         // uint16_t voltage = 6;
         //
@@ -112,22 +142,50 @@ void Task_Loop()
         // f3 = f1 + f2;
 
 
-        while (a<100)
-        {
-            a++;
-        }
-        if (a==100)
-        {
-            a=0;
-        }
-        float f4[5];
-        f4[0]=Encoder*360.0f/8191.0f;
-        f4[1]=Omega;
-        f4[2]=Torgue*20.0f/16384.0f;
-        f4[3]=Temperture;
-        f4[5]=a;
+        // f4[0]=Encoder;
+        // f4[1]=Omega;
+        // f4[2]=Torgue;
+        // f4[3]=Temperture;
+        // Vofa_JustFloat(f4, 4);
 
-        Vofa_JustFloat(f4, 5);
+        // int16_t torque = 8000;
+
+        // while(torque < 3000)
+        // {
+        //     torque += 50;
+        //     CAN1_0x200_Tx_Data[0] = torque >> 8;
+        //     CAN1_0x200_Tx_Data[1] = torque;
+        //     CAN_Send_Data(&hcan1, 0x200, CAN1_0x200_Tx_Data, 8);
+        //     HAL_Delay(50);
+        // }
+        // while(torque > -1000)
+        // {
+        //     torque -= 50;
+        //     CAN1_0x200_Tx_Data[0] = torque >> 8;
+        //     CAN1_0x200_Tx_Data[1] = torque;
+        //     CAN_Send_Data(&hcan1, 0x200, CAN1_0x200_Tx_Data, 8);
+        //     HAL_Delay(50);
+        // }
+
+
+        // int16_t torque = 5000;
+        //
+        // CAN1_0x200_Tx_Data[0] = torque >> 8;
+        // CAN1_0x200_Tx_Data[1] = torque;
+        // CAN_Send_Data(&hcan1, 0x200, CAN1_0x200_Tx_Data, 8);
+        //
+        // f4[0]=Encoder;
+        // f4[1]=Omega;
+        // f4[2]=Torgue;
+        // f4[3]=Temperture;
+        // // Vofa_JustFloat(f4, 4);
+        // justfloat_displaydata(Encoder,Omega,Torgue,Temperture,0,0);
+        //
+        //
+        // //
+
+
+
 
 
         // HAL_Delay(10);
@@ -199,29 +257,7 @@ void Task_Loop()
         // HAL_UART_Transmit_DMA(&huart2, Tx_data, 5);
 
 
-        // int16_t torque = 2000;
 
-        // while(torque < 3000)
-        // {
-        //     torque += 50;
-        //     CAN1_0x200_Tx_Data[0] = torque >> 8;
-        //     CAN1_0x200_Tx_Data[1] = torque;
-        //     CAN_Send_Data(&hcan1, 0x200, CAN1_0x200_Tx_Data, 8);
-        //     HAL_Delay(50);
-        // }
-        // while(torque > -1000)
-        // {
-        //     torque -= 50;
-        //     CAN1_0x200_Tx_Data[0] = torque >> 8;
-        //     CAN1_0x200_Tx_Data[1] = torque;
-        //     CAN_Send_Data(&hcan1, 0x200, CAN1_0x200_Tx_Data, 8);
-        //     HAL_Delay(50);
-        // }
-
-        // CAN1_0x200_Tx_Data[0] = torque >> 8;
-        // CAN1_0x200_Tx_Data[1] = torque;
-        // CAN_Send_Data(&hcan1, 0x200, CAN1_0x200_Tx_Data, 8);
-        // HAL_Delay(1);;
         // CAN_Send_Data(&hcan2, 0x200, CAN2_0x200_Tx_Data, 8);
         // //
 
