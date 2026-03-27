@@ -1,21 +1,26 @@
-//
-// Created by BINXUAN on 2026/3/17.
-//
-
 #ifndef DVC_VOFA_H
 #define DVC_VOFA_H
 
-#include "stm32f4xx_hal.h"
-#include "drv_usart.h"
-#include <stdio.h>
-#include "stdint.h"
-#include <string.h>
-#include <stdarg.h>
-void Vofa_FireWater(const char *format, ...);
-void Vofa_JustFloat(float *_data, uint8_t _num);
-void Serial_SendByte(uint8_t Byte);
-void Serial_SendArray(uint8_t *Array, uint16_t Length);
-void justfloat_displaydata(float position_target,float position_actual,float position_out,float speed_target,float speed_actual,float speed_out);
+#include <stdint.h>
 
+// 最大支持参数数量（可修改）
+#define VOFA_MAX_PARAMS 4
+
+// 调参数据回调函数类型
+typedef void (*vofa_param_callback_t)(uint8_t index, float value);
+
+// 发送单字节回调（平台相关）
+typedef void (*vofa_send_byte_t)(uint8_t byte);
+
+// 初始化 VOFA 库
+void vofa_init(vofa_send_byte_t send_func, vofa_param_callback_t param_cb);
+
+// 多通道绘图：发送 N 个 float
+void vofa_draw(float *data, uint8_t ch_num);
+
+// 解析串口接收数据（外部传入）
+void vofa_parse_rx(uint8_t *buf, uint16_t len);
+
+void uart_send_byte(uint8_t byte);
 
 #endif //DVC_VOFA_H

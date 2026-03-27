@@ -1,76 +1,41 @@
-
-
-/**
- * @file drv_uart.h
- * @author yssickjgd (1345578933@qq.com)
- * @brief 仿照SCUT-Robotlab改写的UART通信初始化与配置流程
- * @version 0.1
- * @date 2022-08-05
- *
- * @copyright USTC-RoboWalker (c) 2022
- *
- */
-
 #ifndef DRV_USART_H
 #define DRV_USART_H
 
-/* Includes ------------------------------------------------------------------*/
+#include "main.h"
 
-#include "stm32f4xx_hal.h"
+// UART define
+#define PRINT_UART huart3
 
-/* Exported macros -----------------------------------------------------------*/
+//-----------------------------------------------------------------------------------------------------------------
+// 如果启用UART功能
+#ifdef HAL_UART_MODULE_ENABLED
 
-/* Exported types ------------------------------------------------------------*/
+#include "usart.h"
 
-/**
- * @brief UART通信接收回调函数数据类型
- *
- */
-typedef void (*UART_Call_Back)(uint8_t *Buffer, uint16_t Length);
+#define WAIT_DELAY 100 // 等待时间1ms
 
-/**
- * @brief UART通信处理结构体
- */
-typedef struct Struct_UART_Manage_Object
+    typedef struct
+    {
+        UART_HandleTypeDef *huart;
+        uint8_t *UART_RxBuf;
+        uint8_t UART_RxBuf_Size;
+        void (*UART_Callback)(uint8_t *pData, uint8_t size);
+    } UART_Interrupt_t;
+
+extern int UART_Print(char *fmt, ...);
+extern void AttachInterrupt_UART(UART_HandleTypeDef *huart, uint8_t RxBuf_Size, void (*UART_Callback)(uint8_t *pData, uint8_t size));
+
+typedef struct
 {
-    UART_HandleTypeDef *UART_Handler;
-    uint8_t *Rx_Buffer;
-    uint16_t Rx_Buffer_Size;
-    UART_Call_Back Callback_Function;
-}Struct_UART_Manage_Object;
+    UART_HandleTypeDef *huart;
+    uint8_t *UART_RxBuf;
+    uint8_t UART_RxBuf_Size;
+    void (*UART_Callback)(void);
+} UART_DMA_Interrupt_t;
+extern void AttachInterrupt_UART_DMA(UART_HandleTypeDef *huart, uint8_t *pData, uint8_t RxBuf_Size, void (*UART_Callback)(void));
 
-/* Exported variables --------------------------------------------------------*/
-
-extern UART_HandleTypeDef huart1;
-extern UART_HandleTypeDef huart2;
-extern UART_HandleTypeDef huart3;
-
-extern Struct_UART_Manage_Object UART1_Manage_Object;
-extern Struct_UART_Manage_Object UART2_Manage_Object;
-extern Struct_UART_Manage_Object UART3_Manage_Object;
-extern Struct_UART_Manage_Object UART4_Manage_Object;
-extern Struct_UART_Manage_Object UART5_Manage_Object;
-extern Struct_UART_Manage_Object UART6_Manage_Object;
-extern Struct_UART_Manage_Object UART7_Manage_Object;
-extern Struct_UART_Manage_Object UART8_Manage_Object;
-
-extern uint8_t UART1_Tx_Data[];
-extern uint8_t UART2_Tx_Data[];
-extern uint8_t UART3_Tx_Data[];
-extern uint8_t UART4_Tx_Data[];
-extern uint8_t UART5_Tx_Data[];
-extern uint8_t UART6_Tx_Data[];
-extern uint8_t UART7_Tx_Data[];
-extern uint8_t UART8_Tx_Data[];
-
-/* Exported function declarations --------------------------------------------*/
-
-void Uart_Init(UART_HandleTypeDef *huart, uint8_t *Rx_Buffer, uint16_t Rx_Buffer_Size, UART_Call_Back Callback_Function);
-
-uint8_t UART_Send_Data(UART_HandleTypeDef *huart, uint8_t *Data, uint16_t Length);
-
-void TIM_UART_PeriodElapsedCallback();
+#endif /* HAL_UART_MODULE_ENABLED */
 
 #endif
 
-/************************ COPYRIGHT(C) SCUT-ROBOTLAB **************************/
+

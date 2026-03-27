@@ -105,23 +105,23 @@ void remote_init(remote_t *ctrl)
 
 //回调函数，不应该被用户调用
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-	if(huart->Instance == USART1){
-		//接收数据存入缓冲区
-		rx_buf[rx_pointer++] = rx_data;
-
-		//判断是否有数据包需要处理
-		if(rx_data == 0x00 && rx_pointer >= 24 && rx_buf[rx_pointer - 25] == 0x0f){
-			rx_flag = 1;
-			data_pointer = rx_pointer - 25;
-			rx_pointer = 0;
-		}
-
-		//开启新一轮传输
-		HAL_UART_Receive_IT(&huart1,&rx_data,1);
-	}
-
-}
-
-
+// void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+// {
+// 	if(huart->Instance == USART1){
+// 		//接收数据存入缓冲区
+// 		rx_buf[rx_pointer++] = rx_data;
+//
+// 		//判断是否有数据包需要处理
+// 		if(rx_data == 0x00 && rx_pointer >= 24 && rx_buf[rx_pointer - 25] == 0x0f){
+// 			rx_flag = 1;
+// 			data_pointer = rx_pointer - 25;
+// 			rx_pointer = 0;
+// 		}
+//
+// 		//开启新一轮传输
+// 		HAL_UART_Receive_IT(&huart1,&rx_data,1);
+// 	}
+//
+// }
+//
+//
