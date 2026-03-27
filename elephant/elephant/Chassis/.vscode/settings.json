@@ -1,0 +1,15 @@
+{
+    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
+    "files.associations": {
+        "dj_motor_driver.h": "c",
+        "bsp.h": "c",
+        "mecanumchassis.h": "c",
+        "chassis.h": "c",
+        "dj_driver.h": "c",
+        "rmds_driver.h": "c",
+        "main.h": "c",
+        "usart.h": "c",
+        "action.h": "c",
+        "stm32f4xx_hal_uart.h": "c"
+    }
+}
