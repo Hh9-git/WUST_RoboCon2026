@@ -64,4 +64,44 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
         }
     }
 }
+
+
+
+static uint8_t UART_DMA_Function_Count = 0;           // DMA函数数量
+static UART_DMA_Interrupt_t *UART_DMA_ItSource_Array; // UART中断回调函数结构体数组指针
+
+/**
+ * 联接UART DMA和中断回调函数
+ * 应输入UART源, 回调函数个数以及回调函数的地址
+ * 联接后自动开启DMA
+ */
+void AttachInterrupt_UART_DMA(UART_HandleTypeDef *huart, uint8_t *pData, uint8_t RxBuf_Size, void (*UART_Callback)(void))
+{
+    UART_DMA_ItSource_Array = (UART_DMA_Interrupt_t *)realloc(UART_DMA_ItSource_Array, (UART_DMA_Function_Count + 1) * sizeof(UART_DMA_Interrupt_t));
+    UART_DMA_ItSource_Array[UART_DMA_Function_Count].huart = huart;
+    UART_DMA_ItSource_Array[UART_DMA_Function_Count].UART_RxBuf = pData;
+    UART_DMA_ItSource_Array[UART_DMA_Function_Count].UART_RxBuf_Size = RxBuf_Size;
+    UART_DMA_ItSource_Array[UART_DMA_Function_Count].UART_Callback = UART_Callback;
+    // assert_param(HAL_UART_Receive_DMA(huart, UART_DMA_ItSource_Array[UART_DMA_Function_Count].UART_RxBuf, RxBuf_Size) == HAL_OK);
+    // assert_param(HAL_UART_Receive_IT(huart, UART_DMA_ItSource_Array[UART_DMA_Function_Count].UART_RxBuf, RxBuf_Size) == HAL_OK);
+    HAL_UART_Receive_DMA(huart, UART_DMA_ItSource_Array[UART_DMA_Function_Count].UART_RxBuf, RxBuf_Size);
+    UART_DMA_Function_Count++;
+}
+
+// UART完成中断
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+    for (uint8_t i = 0; i < UART_DMA_Function_Count; i++)
+    {
+        if (UART_DMA_ItSource_Array[i].huart == huart)
+        {
+            UART_DMA_ItSource_Array[i].UART_Callback();
+            // assert_param(HAL_UART_Receive_DMA(huart, UART_DMA_ItSource_Array[i].UART_RxBuf, UART_DMA_ItSource_Array[i].UART_RxBuf_Size) == HAL_OK);
+            // assert_param(HAL_UART_Receive_IT(huart, UART_DMA_ItSource_Array[i].UART_RxBuf, UART_DMA_ItSource_Array[i].UART_RxBuf_Size) == HAL_OK);
+            HAL_UART_Receive_DMA(huart, UART_DMA_ItSource_Array[i].UART_RxBuf, UART_DMA_ItSource_Array[i].UART_RxBuf_Size);
+        }
+    }
+}
+
+
 #endif /* HAL_UART_MODULE_ENABLED */

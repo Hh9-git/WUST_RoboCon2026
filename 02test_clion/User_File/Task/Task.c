@@ -21,7 +21,9 @@
 #include "stm32f4xx_hal.h"
 #include <math.h>
 
-uint8_t Uart_Rxdata[128];
+// uint8_t Uart_Rxdata[128];
+/* 程序从DTCM开始执行，但是不支持DMA访问，所以需要在AXI SRAM分配内存 */
+uint8_t Uart_Rxdata[128] __attribute__((section(".dma_data")));
 
 void Serial_callback(uint8_t *pData, uint8_t size)
 {
@@ -38,10 +40,23 @@ void Serial_callback(uint8_t *pData, uint8_t size)
 
 }
 
+void Uart2_callback(void)
+{
+    if (Uart_Rxdata[0] == '1')
+    {
+        LED_green_Toggle();
+    }
+    if (Uart_Rxdata[0] == '2')
+    {
+        LED_red_Toggle();
+    }
+}
+
 void Task_Init()
 {
 
-    AttachInterrupt_UART(&huart3, 128, Serial_callback);
+    AttachInterrupt_UART_DMA(&huart2, Uart_Rxdata, 128, Uart2_callback);
+    // AttachInterrupt_UART(&huart3, 128, Serial_callback);
 }
 
 
@@ -49,8 +64,8 @@ void Task_Loop()
 {
     // LED_green_Toggle();
     // HAL_Delay(500);
-    UART_Print("123456\r\n");
-    // HAL_UART_Transmit(&huart3, (uint8_t *)"123\r\n", strlen("123\r\n"), 1000);
+    // UART_Print("123456\r\n");
+    HAL_UART_Transmit(&huart2, (uint8_t *)"123456\r\n", 8, 100);
 
 
 }
