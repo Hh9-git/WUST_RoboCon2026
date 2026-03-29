@@ -45,6 +45,10 @@ add_executable(${CMAKE_PROJECT_NAME}
         User_File/Device/dvc_remote.h
         User_File/Middleware/Algorithm/alg_pid.c
         User_File/Middleware/Algorithm/alg_pid.h
+        User_File/Middleware/Driver/drv_tim.c
+        User_File/Middleware/Driver/drv_tim.h
+        User_File/Device/dvc_dji_motor.c
+        User_File/Device/dvc_dji_motor.h
 
 )
 
@@ -63,10 +67,13 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
         User_File/Task/Task.c
         User_File/Middleware/Driver/drv_usart.c
         User_File/Middleware/Driver/drv_can.c
+        User_File/Middleware/Driver/drv_tim.c
         User_File/Middleware/Algorithm/alg_pid.c
+        User_File/Device/dvc_dji_motor.c
         User_File/Device/dvc_LED.c
         User_File/Device/dvc_vofa.c
         User_File/Device/dvc_remote.c
+
 
 
 
@@ -76,9 +83,10 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
         User_File/Task
+        User_File/Device
         User_File/Middleware/Driver
         User_File/Middleware/Algorithm
-        User_File/Device
+
 
 
 

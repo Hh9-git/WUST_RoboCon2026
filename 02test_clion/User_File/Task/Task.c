@@ -10,20 +10,16 @@
 
 
 #include "Task.h"
-#include "gpio.h"
 #include "usart.h"
 #include "../Device/dvc_LED.h"
 #include "drv_can.h"
 #include "drv_usart.h"
 #include "dvc_vofa.h"
-#include "dvc_remote.h"
-#include "stdio.h"
-#include "stm32f4xx_hal.h"
-#include <math.h>
+#include "dvc_dji_motor.h"
 
-// uint8_t Uart_Rxdata[128];
-/* 程序从DTCM开始执行，但是不支持DMA访问，所以需要在AXI SRAM分配内存 */
-uint8_t Uart_Rxdata[128] __attribute__((section(".dma_data")));
+uint8_t Uart_Rxdata[128];
+uint8_t CAN_Txdata[8]={10,20,30,40,50,60,70,80};
+DJ_Motor_t DJ_Motor3508[2];
 
 void Serial_callback(uint8_t *pData, uint8_t size)
 {
@@ -40,32 +36,31 @@ void Serial_callback(uint8_t *pData, uint8_t size)
 
 }
 
-void Uart2_callback(void)
-{
-    if (Uart_Rxdata[0] == '1')
-    {
-        LED_green_Toggle();
-    }
-    if (Uart_Rxdata[0] == '2')
-    {
-        LED_red_Toggle();
-    }
-}
 
 void Task_Init()
 {
-
-    AttachInterrupt_UART_DMA(&huart2, Uart_Rxdata, 128, Uart2_callback);
-    // AttachInterrupt_UART(&huart3, 128, Serial_callback);
+    AttachInterrupt_UART(&huart3, 128, Serial_callback);
+    AttachInterrupt_CAN(&hcan1, DJ_CAN_Callback);
+    // DJ_Init(&DJ_Motor3508[1], 1, M3508);
+    DJ_Init(&DJ_Motor3508[0], 1, M3508);
 }
 
 
+
+// uint16_t current=3000;
 void Task_Loop()
 {
+
+    DJ_SetSpeed(&DJ_Motor3508[0], 10);
+    DJ_MotorRun();
+
+    // CAN_Txdata[0]=current>>8;
+    // CAN_Txdata[1]=current&0xFF;
     // LED_green_Toggle();
-    // HAL_Delay(500);
-    // UART_Print("123456\r\n");
-    HAL_UART_Transmit(&huart2, (uint8_t *)"123456\r\n", 8, 100);
+    // UART_Print("%d",DJ_Motor3508[0].angle);
+    // CAN_Transmit(&hcan1, 0x200, (uint8_t *)CAN_Txdata);
+
+    // HAL_UART_Transmit(&huart2, (uint8_t *)"123456\r\n", 8, 100);
 
 
 }

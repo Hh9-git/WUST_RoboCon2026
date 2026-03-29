@@ -3,11 +3,9 @@
 #include <stdarg.h>
 #include <stdlib.h>
 
-
+//----------------------BSP_UART----------------------//
 #ifdef HAL_UART_MODULE_ENABLED
-
-char UART_TxBuf[128];
-
+char UART_TxBuf[128]={0};
 // 串口打印 UART_Print("123456\r\n");格式需要加\r
 int UART_Print(char *fmt, ...)
 {
@@ -16,14 +14,13 @@ int UART_Print(char *fmt, ...)
     va_start(ap, fmt);
     ret = vsprintf(UART_TxBuf, fmt, ap);
     va_end(ap);
-    // if (ret > 0)
-    // {
-    //     assert_param(HAL_UART_Transmit(&PRINT_UART, (uint8_t *)UART_TxBuf, ret, WAIT_DELAY) == HAL_OK);
-    // }
-    HAL_UART_Transmit(&PRINT_UART, (uint8_t *)UART_TxBuf, ret, WAIT_DELAY);
+    if (ret > 0)
+    {
+        HAL_UART_Transmit(&PRINT_UART, (uint8_t *)UART_TxBuf, ret, HAL_MAX_DELAY);
+    }
+    // HAL_UART_Transmit(&PRINT_UART, (uint8_t *)UART_TxBuf, ret, WAIT_DELAY);
     return ret;
 }
-
 #endif /* HAL_UART_MODULE_ENABLED */
 
 
