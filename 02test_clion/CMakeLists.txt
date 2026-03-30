@@ -108,4 +108,11 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 )
 
 
+# 对于有硬件FPU的MCU（如F4系列）使用
+ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mfloat-abi=hard -mfpu=fpv4-sp-d16")
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfloat-abi=hard -mfpu=fpv4-sp-d16")
+
+# 使能printf浮点数支持
+target_link_options(${CMAKE_PROJECT_NAME} PRIVATE -u _printf_float)
+
 

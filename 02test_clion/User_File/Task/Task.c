@@ -23,17 +23,7 @@ DJ_Motor_t DJ_Motor3508[2];
 
 void Serial_callback(uint8_t *pData, uint8_t size)
 {
-
-    Uart_Rxdata[0] = pData[0];
-    if (Uart_Rxdata[0] == '1')
-    {
-        LED_green_Toggle();
-    }
-     if (Uart_Rxdata[0] == '2')
-    {
-        LED_red_Toggle();
-    }
-
+    
 }
 
 
@@ -42,25 +32,15 @@ void Task_Init()
     AttachInterrupt_UART(&huart3, 128, Serial_callback);
     AttachInterrupt_CAN(&hcan1, DJ_CAN_Callback);
     // DJ_Init(&DJ_Motor3508[1], 1, M3508);
-    DJ_Init(&DJ_Motor3508[0], 1, M3508);
+    DJ_Init(&DJ_Motor3508[0], 1, M3508, PID_METHOD);
+
+
 }
 
-
-
-// uint16_t current=3000;
 void Task_Loop()
 {
-
-    DJ_SetSpeed(&DJ_Motor3508[0], 10);
-    DJ_MotorRun();
-
-    // CAN_Txdata[0]=current>>8;
-    // CAN_Txdata[1]=current&0xFF;
-    // LED_green_Toggle();
-    // UART_Print("%d",DJ_Motor3508[0].angle);
-    // CAN_Transmit(&hcan1, 0x200, (uint8_t *)CAN_Txdata);
-
-    // HAL_UART_Transmit(&huart2, (uint8_t *)"123456\r\n", 8, 100);
-
+    justfloat_displaydata(DJ_Motor3508[0].setAngle, DJ_Motor3508[0].total_angle, DJ_Motor3508[0].PID_Angle.out, DJ_Motor3508[0].setSpeed, DJ_Motor3508[0].speed, DJ_Motor3508[0].PID_SpeedOfAngle.out);
+    // firewater_displaydata(DJ_Motor3508[0].setAngle, DJ_Motor3508[0].total_angle, DJ_Motor3508[0].PID_Angle.out, DJ_Motor3508[0].setSpeed, DJ_Motor3508[0].speed, DJ_Motor3508[0].PID_SpeedOfAngle.out);
+    // UART_Print("Angle: %f, Speed: %d, Current: %d\r\n", DJ_Motor3508[0].total_angle, DJ_Motor3508[0].speed, DJ_Motor3508[0].current);
 
 }
