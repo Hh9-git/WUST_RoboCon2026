@@ -33,14 +33,17 @@ void Task_Init()
     AttachInterrupt_CAN(&hcan1, DJ_CAN_Callback);
     // DJ_Init(&DJ_Motor3508[1], 1, M3508);
     DJ_Init(&DJ_Motor3508[0], 1, M3508, PID_METHOD);
+    DJ_SetSpeed(&DJ_Motor3508[0], 3000.0f);
+    // DJ_SetAngle(&DJ_Motor3508[0], 720.0f, 1000.0f);
+
 
 
 }
 
 void Task_Loop()
 {
-    justfloat_displaydata(DJ_Motor3508[0].setAngle, DJ_Motor3508[0].total_angle, DJ_Motor3508[0].PID_Angle.out, DJ_Motor3508[0].setSpeed, DJ_Motor3508[0].speed, DJ_Motor3508[0].PID_SpeedOfAngle.out);
+    // justfloat_displaydata(DJ_Motor3508[0].setAngle, DJ_Motor3508[0].total_angle, DJ_Motor3508[0].PID_Angle.out, DJ_Motor3508[0].setSpeed, DJ_Motor3508[0].speed, DJ_Motor3508[0].PID_SpeedOfAngle.out);
     // firewater_displaydata(DJ_Motor3508[0].setAngle, DJ_Motor3508[0].total_angle, DJ_Motor3508[0].PID_Angle.out, DJ_Motor3508[0].setSpeed, DJ_Motor3508[0].speed, DJ_Motor3508[0].PID_SpeedOfAngle.out);
-    // UART_Print("Angle: %f, Speed: %d, Current: %d\r\n", DJ_Motor3508[0].total_angle, DJ_Motor3508[0].speed, DJ_Motor3508[0].current);
-
+    UART_Print("%f,%f,%f,%f,%f,%f\r\n", DJ_Motor3508[0].setAngle, DJ_Motor3508[0].total_angle,DJ_Motor3508[0].PID_Angle.out,DJ_Motor3508[0].setSpeed,DJ_Motor3508[0].speed, DJ_Motor3508[0].PID_SpeedOfAngle.out);
+    DJ_MotorRun();
 }
