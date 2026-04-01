@@ -8,10 +8,15 @@
 //FireWater  0
 //JustFloat  1
 #define VOFA_DATA_FORMAT 1
+//调试模式 1
+//不调试模式 0
+#define debugmode 1
 
 #define commandlength 200
 #define framehead '='
 #define frametail '!'
+
+extern uint8_t DataBuff[commandlength];//指令内容
 
 typedef struct{
     float speed_kp;
@@ -24,6 +29,7 @@ typedef struct{
 
 float Get_Data(void);
 void USART_PID_Adjust(uint8_t Motor_n);
+void Vofa_Callback(void);
 
 void firewater_displaydata(float position_target,float position_actual,float position_out,float speed_target,float speed_actual,float speed_out);
 void Float_to_Byte(float f,unsigned char byte[]);
