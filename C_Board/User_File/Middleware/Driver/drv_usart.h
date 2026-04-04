@@ -13,26 +13,15 @@
 #include "usart.h"
 
 #define WAIT_DELAY 100 // 等待时间1ms
-
-    typedef struct
-    {
-        UART_HandleTypeDef *huart;
-        uint8_t *UART_RxBuf;
-        uint8_t UART_RxBuf_Size;
-        void (*UART_Callback)(uint8_t *pData, uint8_t size);
-    } UART_Interrupt_t;
-
 extern int UART_Print(char *fmt, ...);
-extern void AttachInterrupt_UART(UART_HandleTypeDef *huart, uint8_t RxBuf_Size, void (*UART_Callback)(uint8_t *pData, uint8_t size));
-
 typedef struct
 {
     UART_HandleTypeDef *huart;
     uint8_t *UART_RxBuf;
     uint8_t UART_RxBuf_Size;
-    void (*UART_Callback)(void);
+    void (*UART_Callback)(uint8_t *pData, uint16_t size);
 } UART_DMA_Interrupt_t;
-extern void AttachInterrupt_UART_DMA(UART_HandleTypeDef *huart, uint8_t *pData, uint8_t RxBuf_Size, void (*UART_Callback)(void));
+extern void AttachInterrupt_UART_DMA(UART_HandleTypeDef *huart, uint8_t *pData, uint8_t RxBuf_Size, void (*UART_Callback)(uint8_t *pData, uint16_t size));
 
 #endif /* HAL_UART_MODULE_ENABLED */
 

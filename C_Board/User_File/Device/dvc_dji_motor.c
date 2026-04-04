@@ -1,4 +1,5 @@
 #include "dvc_dji_motor.h"
+#include "drv_usart.h"
 
 #define DJ_MOTOR_CAN hcan1
 
@@ -49,6 +50,7 @@ void DJ_CAN_Callback(CAN_RxHeaderTypeDef *pHeader, uint8_t *pBuf)
             Motors[i]->angle = (uint16_t)(pBuf[0] << 8 | pBuf[1]);
             Motors[i]->speed = (uint16_t)(pBuf[2] << 8 | pBuf[3]);
             Motors[i]->current = (uint16_t)(pBuf[4] << 8 | pBuf[5]);
+
 
             if (Motors[i]->angle - Motors[i]->last_angle > 4096)
             {

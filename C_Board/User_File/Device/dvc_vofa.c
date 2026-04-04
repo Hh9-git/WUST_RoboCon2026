@@ -121,12 +121,16 @@ void Serial_SendArray(uint8_t *Array, uint16_t Length)
 
 
 
-void Vofa_Callback(void)
+void Vofa_Callback(uint8_t *data, uint16_t size)
 {
+
     RxLine++;                      //每接收到一个数据，进入回调数据长度加1
     DataBuff[RxLine-1]=RxBuffer[0];  //把每次接收到的数据保存到缓存数组
     if(RxBuffer[0]==frametail)            //接收结束标志位，这个数据可以自定义，根据实际需求，这里只做示例使用，不一定是0x21
     {
+        /**********************
+        * 下面是调试代码，可以在串口助手上查看接收的数据
+         *********************/
         UART_Print("RXLen=%d\r\n",RxLine);
         for(int i=0;i<RxLine;i++)
            UART_Print("UART DataBuff[%d] = %c\r\n",i,DataBuff[i]);
@@ -135,7 +139,9 @@ void Vofa_Callback(void)
         RxLine=0;  //清空接收长度
     }
     RxBuffer[0]=0;
-    HAL_UART_Receive_IT(&huart1, (uint8_t *)RxBuffer, 1); //每接收一个数据，就打开一次串口中断接收，否则只会接收一个数据就停止接收
+    // HAL_UART_Receive_IT(&huart1,RxBuffer,1);
+    // // HAL_UART_Receive_DMA(&huart1,(uint8_t *)RxBuffer,1);
+    HAL_UARTEx_ReceiveToIdle_DMA(&huart1, (uint8_t *)RxBuffer, 1); //每接收一个数据，就打开一次串口中断接收，否则只会接收一个数据就停止接收
 
 }
 /*
@@ -185,7 +191,7 @@ float Get_Data(void)
                 (DataBuff[data_Start_Num+4]-48) + (DataBuff[data_Start_Num+5]-48)*0.1f;
     }
     if(minus_Flag == 1)  data_return = -data_return;
-    //    printf("data=%.2f\r\n",data_return);
+    UART_Print("data=%.2f\r\n",data_return);
     return data_return;
 }
 
@@ -196,7 +202,7 @@ float Get_Data(void)
 void USART_PID_Adjust(uint8_t Motor_n)
 {
     float data_Get = Get_Data(); // 存放接收到的数据
-    // UART_Print("data=%.2f\r\n",data_Get);
+    // UART_Print("%.2f,100\r\n",data_Get);
     if(Motor_n == 0)//电机1
     {
         if(DataBuff[0]=='P' && DataBuff[1]=='1') // 位置环P
@@ -235,6 +241,8 @@ void USART_PID_Adjust(uint8_t Motor_n)
     //        else if((DataBuff[0]=='P' && DataBuff[1]=='o') && DataBuff[2]=='s') //目标位置
     //            R_Target_Position = data_Get;
     //    }
+    // UART_Print("dataget=%.2f,speedkp=%.2f\r\n",data_Get,para.speed_kp);
+    // UART_Print("%.2f,%.2f\r\n",data_Get,para.speed_kp);
 }
 
 

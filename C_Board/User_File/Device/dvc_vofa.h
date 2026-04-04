@@ -29,7 +29,7 @@ typedef struct{
 
 float Get_Data(void);
 void USART_PID_Adjust(uint8_t Motor_n);
-void Vofa_Callback(void);
+void Vofa_Callback(uint8_t *data, uint16_t size);
 
 void firewater_displaydata(float position_target,float position_actual,float position_out,float speed_target,float speed_actual,float speed_out);
 void Float_to_Byte(float f,unsigned char byte[]);

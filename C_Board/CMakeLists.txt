@@ -46,7 +46,12 @@ add_executable(${CMAKE_PROJECT_NAME}
         User_File/Device/dvc_vofa.c
         User_File/Device/dvc_vofa.h
         User_File/Middleware/Driver/drv_tim.c
-        User_File/Middleware/Driver/drv_tim.h)
+        User_File/Middleware/Driver/drv_tim.h
+        User_File/Device/dvc_remote.c
+        User_File/Device/dvc_remote.h
+        User_File/Task/Chassis.c
+        User_File/Task/Chassis.h
+)
 
 # Add STM32CubeMX generated sources
 add_subdirectory(cmake/stm32cubemx)
@@ -60,12 +65,15 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
         User_File/Task/Task.c
+        User_File/Task/Chassis.c
         User_File/Middleware/Driver/drv_usart.c
         User_File/Middleware/Driver/drv_can.c
         User_File/Middleware/Algorithm/alg_pid.c
         User_File/Middleware/Driver/drv_tim.c
         User_File/Device/dvc_dji_motor.c
         User_File/Device/dvc_vofa.c
+        User_File/Device/dvc_remote.c
+
 )
 
 # Add include paths
