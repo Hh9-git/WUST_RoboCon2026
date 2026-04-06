@@ -66,7 +66,7 @@ extern "C"
         Impedance_t imp;
 #endif
     }  DJ_Motor_t;
-    extern DJ_Motor_t DJ_Motor3508[2];
+    extern DJ_Motor_t DJ_Motor3508[4];
     extern DJ_Motor_t DJ_Motor2006[2];
 
 #ifdef HAL_CAN_MODULE_ENABLED

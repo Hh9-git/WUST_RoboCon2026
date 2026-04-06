@@ -8,19 +8,20 @@
 
 /****FS-i6X遥控器数据结构体****/
 typedef struct{       //低位~中值~高位
-    int16_t Right_X;  //286~1024~1746
-    int16_t Right_Y;  //240~1024~1678
-    int16_t Left_Y;   //303~1024~1765
-    int16_t Left_X;   //248~1024~1700
-    int16_t SWA;      //240~1807
-    int16_t SWB;      //240~1807
-    int16_t SWC;      //240~1024~1807
-    int16_t SWD;      //240~1807
-    int16_t VRA;      //298~1024~1805
-    int16_t VRB;      //240~1807
+    float Right_X;  //286~1024~1746
+    float Right_Y;  //240~1024~1678
+    float Left_Y;   //303~1024~1765
+    float Left_X;   //248~1024~1700
+    float SWA;      //240~1807
+    float SWB;      //240~1807
+    float SWC;      //240~1024~1807
+    float SWD;      //240~1807
+    float VRA;      //298~1024~1805
+    float VRB;      //240~1807
 }Remote_control_struct;
 
 extern uint8_t Rx_buf[64];
+extern uint16_t sbus_channels[16];
 extern Remote_control_struct Remote_control_FS;
 //函数定义
 
