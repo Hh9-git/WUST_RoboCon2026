@@ -13,7 +13,6 @@ typedef struct
 {
     CAN_HandleTypeDef *hcan;
     void (*CAN_Callback)(CAN_RxHeaderTypeDef *pHeader, uint8_t *pBuf);
-
 } CAN_Interrupt_t;
 
 // 把can的buf中的内容发送出去, 长度为8

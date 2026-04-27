@@ -49,6 +49,8 @@ add_executable(${CMAKE_PROJECT_NAME}
         User_File/Middleware/Driver/drv_tim.h
         User_File/Device/dvc_dji_motor.c
         User_File/Device/dvc_dji_motor.h
+        User_File/Device/dvc_Action.c
+        User_File/Device/dvc_Action.h
 
 )
 
@@ -73,6 +75,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
         User_File/Device/dvc_LED.c
         User_File/Device/dvc_vofa.c
         User_File/Device/dvc_remote.c
+        User_File/Device/dvc_Action.c
 
 
 

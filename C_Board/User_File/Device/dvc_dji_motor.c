@@ -43,14 +43,12 @@ void DJ_CAN_Callback(CAN_RxHeaderTypeDef *pHeader, uint8_t *pBuf)
     case DJ_M8_ID:
         {
             static uint8_t i = 0;
-
             i = pHeader->StdId - DJ_M1_ID;
 
             Motors[i]->last_angle = Motors[i]->angle;
             Motors[i]->angle = (uint16_t)(pBuf[0] << 8 | pBuf[1]);
             Motors[i]->speed = (uint16_t)(pBuf[2] << 8 | pBuf[3]);
             Motors[i]->current = (uint16_t)(pBuf[4] << 8 | pBuf[5]);
-
 
             if (Motors[i]->angle - Motors[i]->last_angle > 4096)
             {

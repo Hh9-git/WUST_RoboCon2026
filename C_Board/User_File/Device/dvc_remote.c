@@ -12,8 +12,9 @@ uint16_t sbus_channels[16];
 
 /******定义FS-i6X遥控器数据结构体变量******/
 Remote_control_struct Remote_control_FS;
+void (*RemoteFunction)(void);
 
-void Remote_callback(uint8_t *data, uint16_t size)
+void SBUS_callback(uint8_t *data, uint16_t size)
 {
 	if (Rx_buf[0] == SBUS_START&& Rx_buf[24] == SBUS_END)
 	{
@@ -29,7 +30,7 @@ void Remote_callback(uint8_t *data, uint16_t size)
 		Remote_control_FS.SWB= (uint16_t)((Rx_buf[10] >> 5 | Rx_buf[11] << 3) & 0x07FF);
 		Remote_control_FS.SWC= (uint16_t)((Rx_buf[12] | Rx_buf[13] << 8) & 0x07FF);
 		Remote_control_FS.SWD = (uint16_t)((Rx_buf[13] >> 3 | Rx_buf[14] << 5) & 0x07FF);
-		// UART_Print("%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\r\n",Remote_control_FS.Right_X,Remote_control_FS.Right_Y,Remote_control_FS.Left_Y,Remote_control_FS.Left_X,Remote_control_FS.VRA,Remote_control_FS.VRB,Remote_control_FS.SWA,Remote_control_FS.SWB,Remote_control_FS.SWC,Remote_control_FS.SWD);
+		UART_Print("%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\r\n",Remote_control_FS.Right_X,Remote_control_FS.Right_Y,Remote_control_FS.Left_Y,Remote_control_FS.Left_X,Remote_control_FS.VRA,Remote_control_FS.VRB,Remote_control_FS.SWA,Remote_control_FS.SWB,Remote_control_FS.SWC,Remote_control_FS.SWD);
 
 		/*********sbus协议解码************/
 		sbus_channels[0] = (uint16_t)((Rx_buf[1] | Rx_buf[2] << 8) & 0x07FF);
@@ -51,4 +52,14 @@ void Remote_callback(uint8_t *data, uint16_t size)
 		// UART_Print("%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\r\n",sbus_channels[0],sbus_channels[1],sbus_channels[2],sbus_channels[3],sbus_channels[4],sbus_channels[5],sbus_channels[6],sbus_channels[7],sbus_channels[8],sbus_channels[9]);
 	}
 	HAL_UARTEx_ReceiveToIdle_DMA(&SBUS_UART,Rx_buf,Rx_buf_size);
+
+	RemoteFunction();
+}
+
+
+void SBUS_Init(void (*SBUS_Function)(void))
+{
+	RemoteFunction = SBUS_Function;
+	/*********遥控测试**********/
+	AttachInterrupt_UART_DMA(&SBUS_UART,Rx_buf,64,SBUS_callback);
 }

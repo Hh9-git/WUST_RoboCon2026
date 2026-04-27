@@ -29,21 +29,10 @@ void Serial_callback(uint8_t *pData, uint8_t size)
 
 void Task_Init()
 {
-    AttachInterrupt_UART(&huart3, 128, Serial_callback);
     AttachInterrupt_CAN(&hcan1, DJ_CAN_Callback);
-    // DJ_Init(&DJ_Motor3508[1], 1, M3508);
-    DJ_Init(&DJ_Motor3508[0], 1, M3508, PID_METHOD);
-    DJ_SetSpeed(&DJ_Motor3508[0], 3000.0f);
-    // DJ_SetAngle(&DJ_Motor3508[0], 720.0f, 1000.0f);
-
-
-
 }
 
 void Task_Loop()
 {
-    // justfloat_displaydata(DJ_Motor3508[0].setAngle, DJ_Motor3508[0].total_angle, DJ_Motor3508[0].PID_Angle.out, DJ_Motor3508[0].setSpeed, DJ_Motor3508[0].speed, DJ_Motor3508[0].PID_SpeedOfAngle.out);
-    // firewater_displaydata(DJ_Motor3508[0].setAngle, DJ_Motor3508[0].total_angle, DJ_Motor3508[0].PID_Angle.out, DJ_Motor3508[0].setSpeed, DJ_Motor3508[0].speed, DJ_Motor3508[0].PID_SpeedOfAngle.out);
-    UART_Print("%f,%f,%f,%f,%f,%f\r\n", DJ_Motor3508[0].setAngle, DJ_Motor3508[0].total_angle,DJ_Motor3508[0].PID_Angle.out,DJ_Motor3508[0].setSpeed,DJ_Motor3508[0].speed, DJ_Motor3508[0].PID_SpeedOfAngle.out);
-    DJ_MotorRun();
+    UART_Print("Hello World\r\n");
 }

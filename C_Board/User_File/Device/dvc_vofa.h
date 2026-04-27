@@ -5,6 +5,7 @@
 
 #include "main.h"
 #include "drv_usart.h"
+#define VOFA_UART huart1
 //FireWater  0
 //JustFloat  1
 #define VOFA_DATA_FORMAT 1

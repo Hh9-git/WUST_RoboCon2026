@@ -55,6 +55,10 @@ add_executable(${CMAKE_PROJECT_NAME}
         User_File/Middleware/Algorithm/alg_fastmath.h
         User_File/Device/dvc_HT_motor.c
         User_File/Device/dvc_HT_motor.h
+        User_File/Device/dvc_action.c
+        User_File/Device/dvc_action.h
+        User_File/Task/RemoteControl.c
+        User_File/Task/RemoteControl.h
 )
 
 # Add STM32CubeMX generated sources
@@ -70,6 +74,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
         User_File/Task/Task.c
         User_File/Task/Chassis.c
+        User_File/Task/RemoteControl.c
         User_File/Middleware/Driver/drv_usart.c
         User_File/Middleware/Driver/drv_can.c
         User_File/Middleware/Driver/drv_tim.c
@@ -79,6 +84,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
         User_File/Device/dvc_HT_motor.c
         User_File/Device/dvc_vofa.c
         User_File/Device/dvc_remote.c
+        User_File/Device/dvc_action.c
 
 
 )

@@ -25,5 +25,7 @@ extern uint16_t sbus_channels[16];
 extern Remote_control_struct Remote_control_FS;
 //函数定义
 
-void Remote_callback(uint8_t *data, uint16_t size);
+void SBUS_Init(void (*SBUS_Function)(void));
+
+void SBUS_callback(uint8_t *data, uint16_t size);
 #endif //DVC_REMOTE_H

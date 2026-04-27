@@ -18,7 +18,15 @@ void CAN_Transmit(CAN_HandleTypeDef *hcan, uint16_t ID, uint8_t *Buf)
         CAN_TxHeader.RTR = CAN_RTR_DATA; /* 指定消息传输帧类型 */
         CAN_TxHeader.DLC = 8;            /* 指定将要传输的帧长度 */
 
-        HAL_CAN_AddTxMessage(hcan, &CAN_TxHeader, Buf, &CAN_TxMailbox);
+        //找到空的发送邮箱，把数据发送出去
+        if(HAL_CAN_AddTxMessage(hcan,&CAN_TxHeader, Buf, (uint32_t*)CAN_TX_MAILBOX0) != HAL_OK)
+        {
+            if(HAL_CAN_AddTxMessage(hcan,&CAN_TxHeader, Buf, (uint32_t*)CAN_TX_MAILBOX1) != HAL_OK)
+            {
+                HAL_CAN_AddTxMessage(hcan,&CAN_TxHeader, Buf, (uint32_t*)CAN_TX_MAILBOX2);
+            }
+        }
+        // HAL_CAN_AddTxMessage(hcan, &CAN_TxHeader, Buf, &CAN_TxMailbox);
     }
 }
 #endif /* HAL_CAN_MODULE_ENABLED */

@@ -12,7 +12,7 @@ extern "C"
 #include "alg_pid.h"
 
 #define PID 1
-#define IMPEDANCE 0
+#define IMPEDANCE 1
 
     typedef enum
     {

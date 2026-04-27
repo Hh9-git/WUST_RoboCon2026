@@ -1,21 +1,14 @@
 #include "Task.h"
 
-#include "drv_can.h"
-#include "drv_tim.h"
-#include "stm32f4xx_hal.h"
-#include "drv_usart.h"
-#include "dvc_dji_motor.h"
-#include "dvc_vofa.h"
-#include "drv_tim.h"
-#include "dvc_remote.h"
-#include "Chassis.h"
-
+#define HT_TEST_A 0
+#define HT_TEST_B 2
+#define HT_TEST_C 7
 DJ_Motor_t DJ_Motor3508[4];
+DJ_Motor_t DJ_Motor2006[2];
 
-float MaxSpeedX = 10000;
-float MaxSpeedY = 10000;
-float MaxSpeedW = 10.0;
+HT_motor_struct HT_Motors[8];
 
+uint8_t CAN_TX_data[8]={0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08};
 /* 毫秒定时器 */
 void MM_TIM_Callback(void)
 {
@@ -35,49 +28,39 @@ void Task_Init(void)
     AttachInterrupt_TIM(&htim7,MM_TIM_Callback);
     HAL_TIM_Base_Start_IT(&htim7);
     /*********开启VOFA*********/
-    AttachInterrupt_UART_DMA(&huart1,DataBuff,200,Vofa_Callback);
+    AttachInterrupt_UART_DMA(&VOFA_UART,DataBuff,200,Vofa_Callback);
     /*********开启CAN**********/
+    AttachInterrupt_CAN(&hcan2, HT_CAN_Callback);
     AttachInterrupt_CAN(&hcan1, DJ_CAN_Callback);
-    DJ_Init(&DJ_Motor3508[0], 1, M3508, PID_METHOD);
-    DJ_Init(&DJ_Motor3508[1], 2, M3508, PID_METHOD);
-    DJ_Init(&DJ_Motor3508[2], 3, M3508, PID_METHOD);
-    DJ_Init(&DJ_Motor3508[3], 4, M3508, PID_METHOD);
-    /*********遥控测试**********/
-    AttachInterrupt_UART_DMA(&huart3,Rx_buf,64,Remote_callback);
+
+    Remote_Init();
+
+    /**大疆电机测试**/
+    // DJ_Init(&DJ_Motor2006[0],5,M2006,PID_METHOD);
+    // DJ_SetAngleInc(&DJ_Motor3508[0],-90);
+    // DJ_SetAngle(&DJ_Motor3508[0],90,1000);
+    // DJ_Init(&DJ_Motor3508[0],1,M3508,IMPEDANCE_METHOD);
+    // DJ_SetImpAngle(&DJ_Motor3508[0],10,1,180,1);
+
+    /**海泰电机测试**/
+    HT_Motor_Init(&HT_Motors[HT_TEST_A],(HT_TEST_A+1),&hcan2);
+    HT_Motor_Init(&HT_Motors[HT_TEST_B],(HT_TEST_B+1),&hcan2);
+    HT_Motor_Init(&HT_Motors[HT_TEST_C],(HT_TEST_C+1),&hcan2);
+    HT_SetTorque(&HT_Motors[HT_TEST_A],0.1);
+    HT_SetTorque(&HT_Motors[HT_TEST_B],0.3);
+    HT_SetTorque(&HT_Motors[HT_TEST_C],0.2);
 }
 
 /*******任务执行循环*********/
 void Task_loop(void)
 {
-    if (Remote_control_FS.SWA > 1000) // 遥控器开关SWA控制底盘启停
-    {
-        chassis.ctrlMode = VELOCITY_MODE;
 
-        /*通道0，前后，最上353 中间1024 最下1695*/
-        chassis.setVx = (Remote_control_FS.Right_Y - 1024) / 671.0f * MaxSpeedX;
-        /*通道1，左右，最左353 中间1024 最右1695*/
-        chassis.setVy = -(Remote_control_FS.Right_X-1024) / 671.0f * MaxSpeedY;
-        /*通道2，自转，最左1695 中间1024 最右353*/
-        chassis.setVw = -(Remote_control_FS.Left_X-1024) / 671.0f * MaxSpeedW;
-        Chassis_Run();
-        /********大疆电机运行********/
-        DJ_MotorRun();
-    }
-    else
-    {
-        DJ_SetSpeed(&DJ_Motor3508[0], 0);
-        DJ_SetSpeed(&DJ_Motor3508[1], 0);
-        DJ_SetSpeed(&DJ_Motor3508[2], 0);
-        DJ_SetSpeed(&DJ_Motor3508[3], 0);
-        DJ_MotorRun();
-    }
-    /********VOFA绘图**********/
-    // justfloat_displaydata(DJ_Motor3508[0].setAngle, DJ_Motor3508[0].angle, DJ_Motor3508[0].PID_Angle.out, DJ_Motor3508[0].setSpeed, DJ_Motor3508[0].speed, DJ_Motor3508[0].PID_Speed.out);
-    justfloat_displaydata(DJ_Motor3508[0].setSpeed,DJ_Motor3508[0].speed,DJ_Motor3508[1].speed,DJ_Motor3508[2].speed,DJ_Motor3508[3].speed,0);
+    // justfloat_displaydata(DJ_Motor3508[0].setSpeed,DJ_Motor3508[0].speed,DJ_Motor3508[0].setAngle,DJ_Motor3508[0].total_angle,0,0);
+    // UART_Print("%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\r\n",sbus_channels[0],sbus_channels[1],sbus_channels[2],sbus_channels[3],sbus_channels[4],sbus_channels[5],sbus_channels[6],sbus_channels[7],sbus_channels[8],sbus_channels[9]);
 
+    HT_Run(&HT_Motors[HT_TEST_A]);
+    HT_Run(&HT_Motors[HT_TEST_B]);
+    HT_Run(&HT_Motors[HT_TEST_C]);
 
-
-
-
-
+    justfloat_displaydata(HT_Motors[HT_TEST_A].Position,HT_Motors[HT_TEST_A].Torque,HT_Motors[HT_TEST_B].Position,HT_Motors[HT_TEST_B].Torque,HT_Motors[HT_TEST_C].Position,HT_Motors[HT_TEST_C].Torque);
 }
