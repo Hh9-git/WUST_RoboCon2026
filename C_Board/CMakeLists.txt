@@ -59,6 +59,16 @@ add_executable(${CMAKE_PROJECT_NAME}
         User_File/Device/dvc_action.h
         User_File/Task/RemoteControl.c
         User_File/Task/RemoteControl.h
+        User_File/Device/dvc_oled.c
+        User_File/Device/dvc_oled.h
+        User_File/Device/dvc_oledfont.h
+        User_File/Device/dvc_key.c
+        User_File/Device/dvc_key.h
+        User_File/Device/dvc_RGB_LED.c
+        User_File/Device/dvc_RGB_LED.h
+        User_File/Middleware/Driver/drv_PWM.c
+        User_File/Middleware/Driver/drv_PWM.h
+
 )
 
 # Add STM32CubeMX generated sources
@@ -85,17 +95,19 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
         User_File/Device/dvc_vofa.c
         User_File/Device/dvc_remote.c
         User_File/Device/dvc_action.c
-
-
+        User_File/Device/dvc_oled.c
+        User_File/Device/dvc_key.c
+        User_File/Device/dvc_RGB_LED.c
+        User_File/Middleware/Driver/drv_PWM.c
 )
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
         User_File/Task
+        User_File/Device
         User_File/Middleware/Driver
         User_File/Middleware/Algorithm
-        User_File/Device
 )
 
 # Add project symbols (macros)

@@ -190,5 +190,3 @@ inline uint8_t HT_ArrivalPos(HT_motor_struct *motor, float per)
 
     return 0;
 }
-
-

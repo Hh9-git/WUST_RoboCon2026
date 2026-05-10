@@ -13,6 +13,9 @@
 #include "dvc_HT_motor.h"
 #include "dvc_action.h"
 #include "RemoteControl.h"
+#include "dvc_oled.h"
+#include "dvc_key.h"
+#include "dvc_RGB_LED.h"
 
 
 void Task_Init(void);
