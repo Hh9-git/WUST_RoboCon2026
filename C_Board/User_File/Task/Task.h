@@ -16,6 +16,8 @@
 #include "dvc_oled.h"
 #include "dvc_key.h"
 #include "dvc_RGB_LED.h"
+#include "dvc_buzzer.h"
+#include "drv_PWM.h"
 
 
 void Task_Init(void);

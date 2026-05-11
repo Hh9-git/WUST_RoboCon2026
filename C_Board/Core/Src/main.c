@@ -102,6 +102,8 @@ int main(void)
   MX_CAN2_Init();
   MX_I2C2_Init();
   MX_TIM5_Init();
+  MX_TIM4_Init();
+  MX_TIM8_Init();
   /* USER CODE BEGIN 2 */
   Task_Init();
   /* USER CODE END 2 */

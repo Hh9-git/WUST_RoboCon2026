@@ -68,6 +68,8 @@ add_executable(${CMAKE_PROJECT_NAME}
         User_File/Device/dvc_RGB_LED.h
         User_File/Middleware/Driver/drv_PWM.c
         User_File/Middleware/Driver/drv_PWM.h
+        User_File/Device/dvc_buzzer.c
+        User_File/Device/dvc_buzzer.h
 
 )
 
@@ -98,6 +100,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
         User_File/Device/dvc_oled.c
         User_File/Device/dvc_key.c
         User_File/Device/dvc_RGB_LED.c
+        User_File/Device/dvc_buzzer.c
         User_File/Middleware/Driver/drv_PWM.c
 )
 

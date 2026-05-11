@@ -3,6 +3,7 @@
 #define HT_TEST_A 0
 #define HT_TEST_B 2
 #define HT_TEST_C 7
+
 DJ_Motor_t DJ_Motor3508[4];
 DJ_Motor_t DJ_Motor2006[2];
 
@@ -10,10 +11,10 @@ HT_motor_struct HT_Motors[8];
 
 uint8_t CAN_TX_data[8]={0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08};
 
-
 uint8_t KeyNum;
 
 float kp1=1,kd1=0,tf1=0;
+
 /* 毫秒定时器 */
 void MM_TIM_Callback(void)
 {
@@ -38,6 +39,10 @@ void MM_TIM_Callback(void)
 void Task_Init(void)
 {
 
+    /*********PWM初始化********/
+    PWM_Init();
+    /*********蜂鸣器初始化********/
+    Buzzer_Init();
     /*******RGB彩灯初始化********/
     RGB_LED_Init();
     /******OLED初始化*********/
@@ -79,16 +84,19 @@ void Task_Init(void)
 /*******任务执行循环*********/
 void Task_loop(void)
 {
-
+    PWM_SetDuty();
     /*********非阻塞式按键*********/
     KeyNum=Key_GetNum();
     if (KeyNum==1)
     {
+        Buzzer_on(10, 15000);
         aRGB_led_show(0x7F123456);
         OLED_LOGO();
+
     }
     else
     {
+        Buzzer_off();
         RGB_LED_off();
     }
     /***********刷新oled显示屏***********/
@@ -106,6 +114,8 @@ void Task_loop(void)
     HT_Run(&HT_Motors[HT_TEST_A]);
     HT_Run(&HT_Motors[HT_TEST_B]);
     HT_Run(&HT_Motors[HT_TEST_C]);
+
+
 
     // justfloat_displaydata(HT_Motors[HT_TEST_A].Position,HT_Motors[HT_TEST_A].Torque,HT_Motors[HT_TEST_B].Position,HT_Motors[HT_TEST_B].Torque,HT_Motors[HT_TEST_C].Position,HT_Motors[HT_TEST_C].Torque);
 }
