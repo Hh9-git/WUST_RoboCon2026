@@ -169,8 +169,8 @@ inline void DJ_MotorRun(void)
     data[6] = Motors[3]->setCurrent >> 8;
     data[7] = Motors[3]->setCurrent;
 #ifdef HAL_CAN_MODULE_ENABLED
-    while (HAL_CAN_GetTxMailboxesFreeLevel(&DJ_MOTOR_CAN) == 0)
-        continue;
+    // while (HAL_CAN_GetTxMailboxesFreeLevel(&DJ_MOTOR_CAN) == 0)
+        // continue;
     CAN_Transmit(&DJ_MOTOR_CAN, DJ_L_ID, data);
 #endif
 #ifdef HAL_FDCAN_MODULE_ENABLED
@@ -187,8 +187,8 @@ inline void DJ_MotorRun(void)
     data[6] = Motors[7]->setCurrent >> 8;
     data[7] = Motors[7]->setCurrent;
 #ifdef HAL_CAN_MODULE_ENABLED
-    while (HAL_CAN_GetTxMailboxesFreeLevel(&DJ_MOTOR_CAN) == 0)
-        continue;
+    // while (HAL_CAN_GetTxMailboxesFreeLevel(&DJ_MOTOR_CAN) == 0)
+    //     continue;
     CAN_Transmit(&DJ_MOTOR_CAN, DJ_H_ID, data);
 #endif
 #ifdef HAL_FDCAN_MODULE_ENABLED

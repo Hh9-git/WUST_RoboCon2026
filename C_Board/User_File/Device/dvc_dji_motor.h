@@ -2,7 +2,7 @@
 #ifndef DVC_DJI_MOTOR_H
 #define DVC_DJI_MOTOR_H
 
-
+#define DJI_MOTOR_CAN &hcan1
 #ifdef __cplusplus
 extern "C"
 {

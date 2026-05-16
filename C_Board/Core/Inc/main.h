@@ -57,6 +57,18 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define TIM8CH1_Pin GPIO_PIN_6
+#define TIM8CH1_GPIO_Port GPIOC
+#define CS1_ACCEL_Pin GPIO_PIN_4
+#define CS1_ACCEL_GPIO_Port GPIOA
+#define INT1_ACCEL_Pin GPIO_PIN_4
+#define INT1_ACCEL_GPIO_Port GPIOC
+#define INT1_ACCEL_EXTI_IRQn EXTI4_IRQn
+#define INT1_GRYO_Pin GPIO_PIN_5
+#define INT1_GRYO_GPIO_Port GPIOC
+#define INT1_GRYO_EXTI_IRQn EXTI9_5_IRQn
+#define CS1_GYRO_Pin GPIO_PIN_0
+#define CS1_GYRO_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

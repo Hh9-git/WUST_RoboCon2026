@@ -2,8 +2,6 @@
 #include "stdlib.h"
 #include "dvc_vofa.h"
 
-
-
 /* HT电机模式选择 */
 enum HT_Commands
 {

@@ -1,7 +1,9 @@
-#ifndef C_BOARD_DVC_RGB_LED_H
-#define C_BOARD_DVC_RGB_LED_H
+#ifndef BSP_RGB_LED_H
+#define BSP_RGB_LED_H
 
 #include "main.h"
+
+extern TIM_HandleTypeDef htim5;
 
 /**
   * @brief          aRGB show
@@ -17,4 +19,4 @@ extern void aRGB_led_show(uint32_t aRGB);
 void RGB_LED_Init(void);
 void RGB_LED_off();
 
-#endif //C_BOARD_DVC_RGB_LED_H
+#endif

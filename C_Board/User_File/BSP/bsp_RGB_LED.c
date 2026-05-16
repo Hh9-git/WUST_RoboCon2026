@@ -1,6 +1,4 @@
-#include "dvc_RGB_LED.h"
-
-extern TIM_HandleTypeDef htim5;
+#include "bsp_RGB_LED.h"
 
 void RGB_LED_Init(void)
 {

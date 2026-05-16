@@ -2,6 +2,7 @@
 #define DVC_HT_MOTOR_H
 #include "drv_can.h"
 
+#define HT_MOTOR_CAN &hcan2
 
 // 电机极限PID
 #define P_MIN -95.5f // Radians

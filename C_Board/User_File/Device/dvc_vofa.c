@@ -99,7 +99,7 @@ void justfloat_displaydata(float position_target,float position_actual,float pos
 
 void Serial_SendByte(uint8_t Byte)
 {
-    HAL_UART_Transmit(&VOFA_UART,&Byte,sizeof(Byte),HAL_MAX_DELAY);
+    HAL_UART_Transmit(VOFA_UART,&Byte,sizeof(Byte),HAL_MAX_DELAY);
 }
 
 void Serial_SendArray(uint8_t *Array, uint16_t Length)
@@ -134,7 +134,7 @@ void Vofa_Callback(uint8_t *data, uint16_t size)
     RxBuffer[0]=0;
     // HAL_UART_Receive_IT(&huart1,RxBuffer,1);
     // // HAL_UART_Receive_DMA(&huart1,(uint8_t *)RxBuffer,1);
-    HAL_UARTEx_ReceiveToIdle_DMA(&VOFA_UART, (uint8_t *)RxBuffer, 1); //每接收一个数据，就打开一次串口中断接收，否则只会接收一个数据就停止接收
+    HAL_UARTEx_ReceiveToIdle_DMA(VOFA_UART, (uint8_t *)RxBuffer, 1); //每接收一个数据，就打开一次串口中断接收，否则只会接收一个数据就停止接收
 }
 /*
  * 解析出DataBuff中的数据

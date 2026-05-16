@@ -36,15 +36,19 @@ void Remote_Callback()
             DJ_SetSpeed(&DJ_Motor3508[3], 0);
             DJ_MotorRun();
         }
-        if (Remote_control_FS.SWB>1000)
+        if (Remote_control_FS.SWB>1000&&Remote_control_FS.SWA > 1000)
         {
-            DJ_SetAngle(&DJ_Motor2006[0],(Remote_control_FS.Left_X-1024) / 671.0f * 100,1000);
-            DJ_MotorRun();
+            HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,GPIO_PIN_SET);
+
+            int16_t angle =-(Remote_control_FS.Left_Y- 1024) / 671 * 135;
+            Servo_SetAngle_135(TIM_CHANNEL_1,angle);
+            Servo_SetAngle_135(TIM_CHANNEL_2,angle);
+            OLED_printf(1,0,"Angle:%+d",angle);
         }
         else
         {
-            DJ_SetSpeed(&DJ_Motor2006[0], 0);
-            DJ_MotorRun();
+            HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,GPIO_PIN_RESET);
+            Servo_SetAngle_135(TIM_CHANNEL_1,0);
         }
         if (Remote_control_FS.SWD>1000)
         {

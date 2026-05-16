@@ -35,41 +35,52 @@ enable_language(C ASM)
 add_executable(${CMAKE_PROJECT_NAME}
         User_File/Task/Task.c
         User_File/Task/Task.h
+        User_File/Task/Chassis.c
+        User_File/Task/Chassis.h
+        User_File/Task/RemoteControl.c
+        User_File/Task/RemoteControl.h
+
         User_File/Middleware/Driver/drv_usart.c
         User_File/Middleware/Driver/drv_usart.h
         User_File/Middleware/Driver/drv_can.c
         User_File/Middleware/Driver/drv_can.h
+        User_File/Middleware/Driver/drv_tim.c
+        User_File/Middleware/Driver/drv_tim.h
+        User_File/Middleware/Driver/drv_PWM.c
+        User_File/Middleware/Driver/drv_PWM.h
+
         User_File/Middleware/Algorithm/alg_pid.c
         User_File/Middleware/Algorithm/alg_pid.h
+        User_File/Middleware/Algorithm/alg_fastmath.c
+        User_File/Middleware/Algorithm/alg_fastmath.h
+
         User_File/Device/dvc_dji_motor.c
         User_File/Device/dvc_dji_motor.h
         User_File/Device/dvc_vofa.c
         User_File/Device/dvc_vofa.h
-        User_File/Middleware/Driver/drv_tim.c
-        User_File/Middleware/Driver/drv_tim.h
         User_File/Device/dvc_remote.c
         User_File/Device/dvc_remote.h
-        User_File/Task/Chassis.c
-        User_File/Task/Chassis.h
-        User_File/Middleware/Algorithm/alg_fastmath.c
-        User_File/Middleware/Algorithm/alg_fastmath.h
         User_File/Device/dvc_HT_motor.c
         User_File/Device/dvc_HT_motor.h
         User_File/Device/dvc_action.c
         User_File/Device/dvc_action.h
-        User_File/Task/RemoteControl.c
-        User_File/Task/RemoteControl.h
         User_File/Device/dvc_oled.c
         User_File/Device/dvc_oled.h
         User_File/Device/dvc_oledfont.h
-        User_File/Device/dvc_key.c
-        User_File/Device/dvc_key.h
-        User_File/Device/dvc_RGB_LED.c
-        User_File/Device/dvc_RGB_LED.h
-        User_File/Middleware/Driver/drv_PWM.c
-        User_File/Middleware/Driver/drv_PWM.h
-        User_File/Device/dvc_buzzer.c
-        User_File/Device/dvc_buzzer.h
+        User_File/Device/dvc_servo.c
+        User_File/Device/dvc_servo.h
+
+        User_File/BSP/bsp_key.c
+        User_File/BSP/bsp_key.h
+        User_File/BSP/bsp_RGB_LED.c
+        User_File/BSP/bsp_RGB_LED.h
+        User_File/BSP/bsp_buzzer.c
+        User_File/BSP/bsp_buzzer.h
+        User_File/BSP/BMI088Middleware.c
+        User_File/BSP/BMI088Middleware.h
+        User_File/BSP/BMI088driver.c
+        User_File/BSP/BMI088driver.h
+        User_File/BSP/BMI088reg.h
 
 )
 
@@ -87,21 +98,28 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
         User_File/Task/Task.c
         User_File/Task/Chassis.c
         User_File/Task/RemoteControl.c
+
         User_File/Middleware/Driver/drv_usart.c
         User_File/Middleware/Driver/drv_can.c
         User_File/Middleware/Driver/drv_tim.c
+        User_File/Middleware/Driver/drv_PWM.c
+
         User_File/Middleware/Algorithm/alg_pid.c
         User_File/Middleware/Algorithm/alg_fastmath.c
+
         User_File/Device/dvc_dji_motor.c
         User_File/Device/dvc_HT_motor.c
         User_File/Device/dvc_vofa.c
         User_File/Device/dvc_remote.c
         User_File/Device/dvc_action.c
         User_File/Device/dvc_oled.c
-        User_File/Device/dvc_key.c
-        User_File/Device/dvc_RGB_LED.c
-        User_File/Device/dvc_buzzer.c
-        User_File/Middleware/Driver/drv_PWM.c
+        User_File/Device/dvc_servo.c
+
+        User_File/BSP/bsp_key.c
+        User_File/BSP/bsp_RGB_LED.c
+        User_File/BSP/bsp_buzzer.c
+        User_File/BSP/BMI088Middleware.c
+        User_File/BSP/BMI088driver.c
 )
 
 # Add include paths
@@ -111,6 +129,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
         User_File/Device
         User_File/Middleware/Driver
         User_File/Middleware/Algorithm
+        User_File/BSP
 )
 
 # Add project symbols (macros)
