@@ -36,9 +36,6 @@ void CAN_Transmit(CAN_HandleTypeDef *hcan, uint16_t ID, uint8_t *Buf)
 // CAN Interrupt
 #ifdef HAL_CAN_MODULE_ENABLED
 
-static CAN_RxHeaderTypeDef CAN_RxHeader;
-static uint8_t CAN_RxBuf[8];
-
 static uint8_t CAN_Function_Count = 0;      // 函数数量
 static CAN_Interrupt_t *CAN_ItSource_Array; // CAN中断回调函数结构体数组指针
 
@@ -58,7 +55,8 @@ void AttachInterrupt_CAN(CAN_HandleTypeDef *hcan, void (*CAN_Callback)(CAN_RxHea
     CAN_FilterInitStructure.FilterIdLow = 0x0000;
     CAN_FilterInitStructure.FilterMaskIdHigh = 0x0000;
     CAN_FilterInitStructure.FilterMaskIdLow = 0x0000;
-    CAN_FilterInitStructure.FilterBank = 0;
+    CAN_FilterInitStructure.FilterBank = (hcan->Instance == CAN1) ? 0 : 14;
+    CAN_FilterInitStructure.SlaveStartFilterBank = 14;
     CAN_FilterInitStructure.FilterFIFOAssignment = CAN_RX_FIFO0;
     HAL_CAN_ConfigFilter(hcan, &CAN_FilterInitStructure);
     HAL_CAN_Start(hcan);
@@ -68,6 +66,8 @@ void AttachInterrupt_CAN(CAN_HandleTypeDef *hcan, void (*CAN_Callback)(CAN_RxHea
 // CAN中断回调
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
+    CAN_RxHeaderTypeDef CAN_RxHeader;
+    uint8_t CAN_RxBuf[8];
     HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &CAN_RxHeader, CAN_RxBuf);
 
     for (uint8_t i = 0; i < CAN_Function_Count; i++)

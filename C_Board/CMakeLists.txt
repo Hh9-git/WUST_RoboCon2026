@@ -81,6 +81,8 @@ add_executable(${CMAKE_PROJECT_NAME}
         User_File/BSP/BMI088driver.c
         User_File/BSP/BMI088driver.h
         User_File/BSP/BMI088reg.h
+        User_File/Task/Arm.c
+        User_File/Task/Arm.h
 
 )
 
@@ -98,6 +100,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
         User_File/Task/Task.c
         User_File/Task/Chassis.c
         User_File/Task/RemoteControl.c
+        User_File/Task/Arm.c
 
         User_File/Middleware/Driver/drv_usart.c
         User_File/Middleware/Driver/drv_can.c

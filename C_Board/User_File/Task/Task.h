@@ -20,6 +20,7 @@
 #include "drv_PWM.h"
 #include "dvc_servo.h"
 #include "BMI088driver.h"
+#include "Arm.h"
 
 
 void Task_Init(void);
