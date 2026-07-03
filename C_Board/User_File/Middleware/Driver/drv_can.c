@@ -1,36 +1,29 @@
 #include "drv_can.h"
-#include <stdio.h>
-#include <stdarg.h>
-#include <stdlib.h>
 
 //----------------------BSP_CAN----------------------//
 #ifdef HAL_CAN_MODULE_ENABLED
 
 static CAN_TxHeaderTypeDef CAN_TxHeader;
-static uint32_t CAN_TxMailbox = 0;
 
 void CAN_Transmit(CAN_HandleTypeDef *hcan, uint16_t ID, uint8_t *Buf)
 {
-    if ((Buf != NULL))
+    if (Buf != NULL)
     {
-        CAN_TxHeader.StdId = ID;         /* 指定标准标识符，该值在0x00-0x7FF */
-        CAN_TxHeader.IDE = CAN_ID_STD;   /* 指定将要传输消息的标识符类型 */
-        CAN_TxHeader.RTR = CAN_RTR_DATA; /* 指定消息传输帧类型 */
-        CAN_TxHeader.DLC = 8;            /* 指定将要传输的帧长度 */
+        CAN_TxHeader.StdId = ID;
+        CAN_TxHeader.IDE = CAN_ID_STD;
+        CAN_TxHeader.RTR = CAN_RTR_DATA;
+        CAN_TxHeader.DLC = 8;
 
-        //找到空的发送邮箱，把数据发送出去
-        if(HAL_CAN_AddTxMessage(hcan,&CAN_TxHeader, Buf, (uint32_t*)CAN_TX_MAILBOX0) != HAL_OK)
+        if (HAL_CAN_AddTxMessage(hcan, &CAN_TxHeader, Buf, (uint32_t *)CAN_TX_MAILBOX0) != HAL_OK)
         {
-            if(HAL_CAN_AddTxMessage(hcan,&CAN_TxHeader, Buf, (uint32_t*)CAN_TX_MAILBOX1) != HAL_OK)
+            if (HAL_CAN_AddTxMessage(hcan, &CAN_TxHeader, Buf, (uint32_t *)CAN_TX_MAILBOX1) != HAL_OK)
             {
-                HAL_CAN_AddTxMessage(hcan,&CAN_TxHeader, Buf, (uint32_t*)CAN_TX_MAILBOX2);
+                HAL_CAN_AddTxMessage(hcan, &CAN_TxHeader, Buf, (uint32_t *)CAN_TX_MAILBOX2);
             }
         }
-        // HAL_CAN_AddTxMessage(hcan, &CAN_TxHeader, Buf, &CAN_TxMailbox);
     }
 }
 #endif /* HAL_CAN_MODULE_ENABLED */
-
 
 //--------------------------------------------------------------------------------------------------------------------
 // CAN Interrupt
@@ -39,10 +32,10 @@ void CAN_Transmit(CAN_HandleTypeDef *hcan, uint16_t ID, uint8_t *Buf)
 static uint8_t CAN_Function_Count = 0;      // 函数数量
 static CAN_Interrupt_t *CAN_ItSource_Array; // CAN中断回调函数结构体数组指针
 
-// 联接CAN中断源和中断回调函数
 void AttachInterrupt_CAN(CAN_HandleTypeDef *hcan, void (*CAN_Callback)(CAN_RxHeaderTypeDef *pHeader, uint8_t *pBuf))
 {
     CAN_ItSource_Array = (CAN_Interrupt_t *)realloc(CAN_ItSource_Array, (CAN_Function_Count + 1) * sizeof(CAN_Interrupt_t));
+
     CAN_ItSource_Array[CAN_Function_Count].hcan = hcan;
     CAN_ItSource_Array[CAN_Function_Count].CAN_Callback = CAN_Callback;
     CAN_Function_Count++;

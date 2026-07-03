@@ -16,7 +16,8 @@
 #define T_MIN -18.0f
 #define T_MAX 18.0f
 
-// #define LIMIT_MIN_MAX(x, min, max) (x) = (((x) <= (min)) ? (min) : (((x) >= (max)) ? (max) : (x)))
+
+#define LIMIT_MIN_MAX(x, min, max) (x) = (((x) <= (min)) ? (min) : (((x) >= (max)) ? (max) : (x)))
 
 
 #ifdef HAL_CAN_MODULE_ENABLED

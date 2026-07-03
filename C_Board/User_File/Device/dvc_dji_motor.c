@@ -42,8 +42,7 @@ void DJ_CAN_Callback(CAN_RxHeaderTypeDef *pHeader, uint8_t *pBuf)
     case DJ_M7_ID:
     case DJ_M8_ID:
         {
-            static uint8_t i = 0;
-            i = pHeader->StdId - DJ_M1_ID;
+            uint8_t i = pHeader->StdId - DJ_M1_ID;
 
             Motors[i]->last_angle = Motors[i]->angle;
             Motors[i]->angle = (uint16_t)(pBuf[0] << 8 | pBuf[1]);
@@ -71,6 +70,8 @@ void DJ_CAN_Callback(CAN_RxHeaderTypeDef *pHeader, uint8_t *pBuf)
  */
 void DJ_Init(DJ_Motor_t *motor, uint8_t Motor_ID, DJ_MotorType_e Motor_Type, DJ_ControllMethod_e method)
 {
+    if (Motor_ID < 1 || Motor_ID > 8) return;
+
 #if PID
 
     if (method == PID_METHOD)
@@ -130,6 +131,8 @@ inline void DJ_MotorRun(void)
 
     for (uint8_t i = 0; i < 8; i++)
     {
+        if (Motors[i] == NULL) continue;
+
 #if PID
         if (Motors[i]->method == PID_METHOD)
         {
@@ -154,12 +157,12 @@ inline void DJ_MotorRun(void)
             Motors[i]->imp.dp = (float)(Motors[i]->setAngle - Motors[i]->total_angle);
             Motors[i]->imp.dv = (float)(Motors[i]->setSpeed - Motors[i]->speed);
             Impedance_Calc(&Motors[i]->imp);
-            Motors[i]->setCurrent = (int16_t)(LIHT_MIN_MAX(Motors[i]->imp.out, MIN_CURRENT, MAX_CURRENT));
+            Motors[i]->setCurrent = (int16_t)(LIMIT_MIN_MAX(Motors[i]->imp.out, MIN_CURRENT, MAX_CURRENT));
         }
 #endif
     }
 
-    /* 控制电机电流 */
+  /* 控制电机电流 */
     data[0] = Motors[0]->setCurrent >> 8;
     data[1] = Motors[0]->setCurrent;
     data[2] = Motors[1]->setCurrent >> 8;
@@ -168,16 +171,7 @@ inline void DJ_MotorRun(void)
     data[5] = Motors[2]->setCurrent;
     data[6] = Motors[3]->setCurrent >> 8;
     data[7] = Motors[3]->setCurrent;
-#ifdef HAL_CAN_MODULE_ENABLED
-    // while (HAL_CAN_GetTxMailboxesFreeLevel(&DJ_MOTOR_CAN) == 0)
-        // continue;
     CAN_Transmit(&DJ_MOTOR_CAN, DJ_L_ID, data);
-#endif
-#ifdef HAL_FDCAN_MODULE_ENABLED
-    while (HAL_FDCAN_GetTxFifoFreeLevel(&DJ_MOTOR_CAN) == 0)
-        continue;
-    FDCAN_Transmit(&DJ_MOTOR_CAN, DJ_L_ID, data);
-#endif
     data[0] = Motors[4]->setCurrent >> 8;
     data[1] = Motors[4]->setCurrent;
     data[2] = Motors[5]->setCurrent >> 8;
@@ -186,16 +180,7 @@ inline void DJ_MotorRun(void)
     data[5] = Motors[6]->setCurrent;
     data[6] = Motors[7]->setCurrent >> 8;
     data[7] = Motors[7]->setCurrent;
-#ifdef HAL_CAN_MODULE_ENABLED
-    // while (HAL_CAN_GetTxMailboxesFreeLevel(&DJ_MOTOR_CAN) == 0)
-    //     continue;
     CAN_Transmit(&DJ_MOTOR_CAN, DJ_H_ID, data);
-#endif
-#ifdef HAL_FDCAN_MODULE_ENABLED
-    while (HAL_FDCAN_GetTxFifoFreeLevel(&DJ_MOTOR_CAN) == 0)
-        continue;
-    FDCAN_Transmit(&DJ_MOTOR_CAN, DJ_H_ID, data);
-#endif
 }
 
 /* 电机角度和圈数清零 */

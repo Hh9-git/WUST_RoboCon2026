@@ -10,7 +10,6 @@ void PID_Init(PID_t *pid, float kp, float ki, float kd, float max_out, float max
     pid->Kd = kd;
     pid->max_out = max_out;
     pid->max_iout = max_iout;
-    pid->err[0] = pid->err[1] = 0.0f;
 }
 
 /* PID计算, 输入反馈值和预期值 */
@@ -23,7 +22,7 @@ float PID_Calc(PID_t *pid, float fdb, float set)
 
     pid->Pout = pid->Kp * pid->err[0];
     pid->Iout += pid->Ki * pid->err[0];
-    pid->Dout = pid->Kd * pid->err[0] - pid->err[1];
+    pid->Dout = pid->Kd * (pid->err[0] - pid->err[1]);
 
     if (pid->Iout > pid->max_iout)
     {
@@ -104,7 +103,7 @@ float TDPID_Calc(TDPID_t *TDpid, float fdb, float set)
 
     TDpid->Pout = TDpid->Kp * TDpid->err[0];
     TDpid->Iout += TDpid->Ki * TDpid->err[0];
-    TDpid->Dout = TDpid->Kd * TDpid->err[0] - TDpid->err[1];
+    TDpid->Dout = TDpid->Kd * (TDpid->err[0] - TDpid->err[1]);
 
     if (TDpid->Iout > TDpid->max_iout)
     {
@@ -134,6 +133,9 @@ void FastPID_Init(fastPID_t *S, float kp, float ki, float kd, float maxout)
     S->A1 = -kp - 2 * kd;
     S->A2 = kd;
     S->MaxOut = maxout;
+    S->state[0] = 0.0f;
+    S->state[1] = 0.0f;
+    S->out = 0.0f;
 }
 
 /* 增量式PID计算, 输入in为误差值 */

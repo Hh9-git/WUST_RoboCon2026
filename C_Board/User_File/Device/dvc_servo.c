@@ -16,7 +16,7 @@ void Servo_Init(void)
 }
 
 /**
- * @brief  适配 TIM8 (PSC=167, ARR=19999) 的 ±135° 舵机控制
+ * @brief  适配 TIM1 (PSC=167, ARR=19999) 的 ±135° 舵机控制
  * @param  channel: TIM_CHANNEL_1/2/3
  * @param  angle: -135 ~ +135 度
  */

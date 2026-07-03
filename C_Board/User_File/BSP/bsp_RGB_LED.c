@@ -38,3 +38,30 @@ void RGB_LED_off()
     __HAL_TIM_SetCompare(&htim5, TIM_CHANNEL_2, 0);
     __HAL_TIM_SetCompare(&htim5, TIM_CHANNEL_3, 0);
 }
+
+
+/**
+ * @brief 启用64个RGB LED
+ * @details        该函数用于开启或点亮连接的64个RGB LED。
+ * @retval         无
+ */
+void RGB_64LEDS_Init()
+{
+    //start tim
+    HAL_TIM_Base_Start(&htim8);
+    //start pwm channel
+    HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_3);
+    __HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_3, 0);
+
+}
+
+
+/**
+ * @brief          开启64个RGB LED
+ * @details        该函数用于开启所有64个RGB LED灯
+ * @retval         none
+ */
+void RGB_64LED_ON()
+{
+    __HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_3, 500);
+}

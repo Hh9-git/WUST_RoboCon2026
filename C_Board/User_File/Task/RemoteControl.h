@@ -6,7 +6,7 @@
 #include "dvc_HT_motor.h"
 #include "Task.h"
 
-void Remote_Init();
-void Remote_Callback();
+void Remote_Init(void);
+void Remote_Callback(void);
 
 #endif //REMOTECONTROL_H

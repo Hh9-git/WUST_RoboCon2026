@@ -2,6 +2,7 @@
 #define BSP_RGB_LED_H
 
 #include "main.h"
+#include "tim.h"
 
 extern TIM_HandleTypeDef htim5;
 
@@ -18,5 +19,6 @@ extern TIM_HandleTypeDef htim5;
 extern void aRGB_led_show(uint32_t aRGB);
 void RGB_LED_Init(void);
 void RGB_LED_off();
-
+void RGB_64LED_ON();
+void RGB_64LEDS_Init();
 #endif

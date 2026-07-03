@@ -73,3 +73,62 @@ void Buzzer_DoubleBeep(void)
     Buzzer_Beep(NOTE_A4, 100);
     Buzzer_Beep(NOTE_A4, 100);
 }
+
+/* 播放旋律 */
+void Buzzer_PlayMelody(const Buzzer_Note_t *notes, uint16_t count, uint16_t gap_ms)
+{
+    for (uint16_t i = 0; i < count; i++)
+    {
+        if (notes[i].freq == NOTE_REST)
+        {
+            Buzzer_SetTone(0);
+            HAL_Delay(notes[i].duration_ms);
+        }
+        else
+        {
+            Buzzer_SetTone(notes[i].freq);
+            HAL_Delay(notes[i].duration_ms);
+            Buzzer_SetTone(0);
+        }
+        HAL_Delay(gap_ms);
+    }
+    Buzzer_SetTone(0);
+}
+
+/* 开机提示音: 上行琶音 C4-E4-G4-C5, 轻快明亮 */
+void Buzzer_Startup(void)
+{
+    const Buzzer_Note_t melody[] = {
+        {NOTE_C4,  80},
+        {NOTE_E4,  80},
+        {NOTE_G4,  80},
+        {NOTE_C5, 200},
+    };
+    Buzzer_PlayMelody(melody, sizeof(melody) / sizeof(melody[0]), 30);
+}
+
+/* 警告提示音: 三连短促高音 */
+void Buzzer_Alert(void)
+{
+    const Buzzer_Note_t melody[] = {
+        {NOTE_G5, 100},
+        {NOTE_REST, 50},
+        {NOTE_G5, 100},
+        {NOTE_REST, 50},
+        {NOTE_G5, 100},
+    };
+    Buzzer_PlayMelody(melody, sizeof(melody) / sizeof(melody[0]), 0);
+}
+
+/* 成功提示音: 上行音阶, 愉快收尾 */
+void Buzzer_Success(void)
+{
+    const Buzzer_Note_t melody[] = {
+        {NOTE_C4,  100},
+        {NOTE_E4,  100},
+        {NOTE_G4,  100},
+        {NOTE_E4,  100},
+        {NOTE_C5,  250},
+    };
+    Buzzer_PlayMelody(melody, sizeof(melody) / sizeof(melody[0]), 20);
+}

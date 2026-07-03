@@ -28,11 +28,7 @@ void ForceControl_Calculate_Safe(
     float x = L1 * cosf(theta1) + L2 * cosf(theta1 + theta2);
     float y = L1 * sinf(theta1) + L2 * sinf(theta1 + theta2);
 
-    // 2. 阻抗控制：计算末端期望力
-    float Fx = Kp * (xd - x) - Kd * omega1;
-    float Fy = Kp * (yd - y) - Kd * omega2;
-
-    // 3. 雅可比矩阵
+    // 2. 雅可比矩阵
     float s1  = sinf(theta1);
     float s12 = sinf(theta1 + theta2);
     float c1  = cosf(theta1);
@@ -43,7 +39,13 @@ void ForceControl_Calculate_Safe(
     float J21 =  L1*c1 + L2*c12;
     float J22 =  L2*c12;
 
-    // 4. 计算原始关节力矩
+    // 3. 阻抗控制：末端速度 = J * omega，计算末端期望力
+    float vx = J11 * omega1 + J12 * omega2;
+    float vy = J21 * omega1 + J22 * omega2;
+    float Fx = Kp * (xd - x) - Kd * vx;
+    float Fy = Kp * (yd - y) - Kd * vy;
+
+    // 4. tau = J^T * F，计算原始关节力矩
     float tau1_raw = J11 * Fx + J21 * Fy;
     float tau2_raw = J12 * Fx + J22 * Fy;
 

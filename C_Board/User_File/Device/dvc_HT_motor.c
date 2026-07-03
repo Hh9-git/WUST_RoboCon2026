@@ -1,6 +1,6 @@
 #include "dvc_HT_motor.h"
-#include "stdlib.h"
 #include "dvc_vofa.h"
+#include <math.h>
 
 /* HT电机模式选择 */
 enum HT_Commands
@@ -70,7 +70,7 @@ void HT_Motor_SetZeroPosition(CAN_HandleTypeDef *can,uint8_t HT_MOTOR_ID)
 }
 
 
-static HT_motor_struct **MotorsArray;  // 电机指针数组
+static HT_motor_struct *MotorsArray[8];  // 电机指针数组
 static uint8_t MotorsCount; // 电机数量
 
 // CAN中断回调函数
@@ -94,10 +94,11 @@ void HT_CAN_Callback(CAN_RxHeaderTypeDef *pHeader, uint8_t *pBuf)
 // 电机初始化,不可以重复初始化
 void HT_Motor_Init(HT_motor_struct *motor, uint8_t ID, CAN_HandleTypeDef *can)
 {
+    if (MotorsCount >= 8) return;
+
     motor->can = can;
-    MotorsCount++; // 电机数+1
-    MotorsArray = (HT_motor_struct **)realloc(MotorsArray, MotorsCount * sizeof(HT_motor_struct *));
-    MotorsArray[MotorsCount - 1] = motor;
+    MotorsArray[MotorsCount] = motor;
+    MotorsCount++;
     motor->ID= ID;
     // 进入电机模式
     cmd[7] = CMD_ENTER_MOTOR_MODE;
@@ -120,7 +121,7 @@ inline void HT_Motor_Set_MIT(HT_motor_struct *motor ,float torque, float speed, 
     uint16_t p, v, kp, kd, t;
     uint8_t buf[8];
 
-    // LIMIT_MIN_MAX(angle, -PI, PI); // 限制最大角度和最小角度
+    LIMIT_MIN_MAX(angle, -PI, PI);
 
     /* 根据协议，对float参数进行转换 */
     p = float_to_uint(angle, P_MIN, P_MAX, 16);
@@ -173,18 +174,6 @@ inline void HT_Run(HT_motor_struct *motor)
 /****检测是否到达位置*****/
 inline uint8_t HT_ArrivalPos(HT_motor_struct *motor, float per)
 {
-    float temp = motor->Position - motor->setPosition;
-
-    /* 取绝对值 */
-    if (temp < 0)
-    {
-        temp = -temp;
-    }
-
-    if (temp < per)
-    {
-        return 1;
-    }
-
-    return 0;
+    float temp = fabsf(motor->Position - motor->setPosition);
+    return (temp < per) ? 1 : 0;
 }
