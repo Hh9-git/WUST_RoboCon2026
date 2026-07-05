@@ -56,9 +56,10 @@ void Task_Init(void)
     AttachInterrupt_UART_DMA(VOFA_UART, DataBuff, 200, Vofa_Callback);
     AttachInterrupt_CAN(HT_MOTOR_CAN, HT_CAN_Callback);
     AttachInterrupt_CAN(DJI_MOTOR_CAN, DJ_CAN_Callback);
-    DJ_Init(&DJ_Motor3508[4], 5, M3508,PID_METHOD);
+    DJ_Init(&DJ_Motor3508[4], 5, M3508,PID_METHOD);//升降台底座3508电机
     DJ_Init(&DJ_Motor3508[5], 6, M3508,PID_METHOD);
-    DJ_Init(&DJ_Motor2006[1], 7, M2006,PID_METHOD);
+    DJ_Init(&DJ_Motor2006[0], 7, M2006,PID_METHOD);
+
     HT_Motor_Init(&HT_Motors[7],8,&hcan2);
     Chassis_Init();
     Remote_Init();
