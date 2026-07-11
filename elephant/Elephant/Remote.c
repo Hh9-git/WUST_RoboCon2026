@@ -78,7 +78,7 @@ void Remote_Callback()
     /*通道13，圆环升降，起始1695，上推到底353*/
     if (sbus_channels[13] > sbus_chan13) // 上升一格
     {
-        DJ_SetAngleInc(&DJ_Motor2006[0], 130);
+        DJ_SetAngleInc(&DJ_Motor2006[0], 130);                        
         DJ_SetAngleInc(&DJ_Motor2006[1], 130);
     }
     else if (sbus_channels[13] < sbus_chan13) // 下降一格
@@ -90,16 +90,7 @@ void Remote_Callback()
 
     /*通道7，夹取，下拉353推出，中间1024，上拉1695收回*/
     if (sbus_channels[7] == 353)
-    {
-        HAL_GPIO_WritePin(POWER3_GPIO_Port, POWER3_Pin, GPIO_PIN_SET);
-    }
-    else if (sbus_channels[7] == 1695)
-    {
-        HAL_GPIO_WritePin(POWER3_GPIO_Port, POWER3_Pin, GPIO_PIN_RESET);
-    }
-
-    /*通道5，选择模式，下拉353手动，上拉1695自动*/
-    if (sbus_channels[5] == 1695)
+    {         
     {
         chassis.ctrlMode = POSITION_MODE;
 

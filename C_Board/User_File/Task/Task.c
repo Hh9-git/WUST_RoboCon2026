@@ -1,13 +1,5 @@
 #include "Task.h"
 
-/* ==================== 调试模式选择（只开一个）==================== */
-#define DEBUG_IMU       0
-#define DEBUG_SERVO     0
-#define DEBUG_DJ_MOTOR  0
-#define DEBUG_HT_MOTOR  0
-#define DEBUG_REMOTE    1
-/* ============================================================== */
-
 /* 海泰电机调试索引 */
 #define HT_A  0
 #define HT_B  2
@@ -43,6 +35,7 @@ void MS_TIM_Callback(void)
 
 void Task_Init(void)
 {
+
     BMI088_init();
     Servo_Init();
     PWM_Init();
@@ -63,18 +56,13 @@ void Task_Init(void)
     HT_Motor_Init(&HT_Motors[7],8,&hcan2);
     Chassis_Init();
     Remote_Init();
-
-
-}
-
+}  
 void Task_loop(void)
 {
-#if DEBUG_REMOTE
-    OLED_printf(0, 0, "RX:%-4d RY:%-4d", (int)Remote_control_FS.Right_X, (int)Remote_control_FS.Right_Y);
+    OLED_printf(0, 0, "2set:%-4d act:%-4d", (int)DJ_Motor2006[0].setAngle, (int)DJ_Motor2006[0].angle);
     OLED_printf(1, 0, "LX:%-4d LY:%-4d", (int)Remote_control_FS.Left_X, (int)Remote_control_FS.Left_Y);
     OLED_printf(2, 0, "SWA:%-4d SWB:%-4d", (int)Remote_control_FS.SWA, (int)Remote_control_FS.SWB);
     OLED_printf(3, 0, "SWC:%-4d SWD:%-4d", (int)Remote_control_FS.SWC, (int)Remote_control_FS.SWD);
     OLED_printf(4, 0, "VA:%-4d VB:%-4d", (int)Remote_control_FS.VRA, (int)Remote_control_FS.VRB);
     HAL_Delay(2);
-#endif
 }
