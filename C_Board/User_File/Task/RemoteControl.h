@@ -6,6 +6,12 @@
 #include "dvc_HT_motor.h"
 #include "Task.h"
 
+
+#include <math.h>
+
+
+
+
 void Remote_Init(void);
 void Remote_Callback(void);
 

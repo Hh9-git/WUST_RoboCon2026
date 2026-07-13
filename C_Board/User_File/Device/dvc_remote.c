@@ -62,9 +62,6 @@ void SBUS_callback(uint8_t *data, uint16_t size)
 			}
 		}
 	}
-
-
-
 	RemoteFunction();
 }
 
@@ -75,3 +72,5 @@ void SBUS_Init(void (*SBUS_Function)(void))
 	/*********遥控测试**********/
 	AttachInterrupt_UART_DMA(&SBUS_UART,Rx_buf,64,SBUS_callback);
 }
+
+
