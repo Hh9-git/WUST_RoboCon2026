@@ -105,7 +105,7 @@ void Remote_Callback()
             HT_Run(&HT_Motors[7]);
 
 
-            float DJ_gripper_angle = (Remote_control_FS.Left_Y - 1024) / 671.0f * 360.0f;
+            float DJ_gripper_angle = (Remote_control_FS.Left_Y - 1024) / 671.0f * 360.0f; 
             DJ_SetAngle(&DJ_Motor2006[0], DJ_gripper_angle,16000);
             DJ_MotorRun();
         }
